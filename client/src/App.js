@@ -1,29 +1,29 @@
-import React, { useState } from "react";
-import gif from "./movie.gif";
+import React from "react";
+import movie from "./movie.mp4";
+import subtitles from "./subtitles.vtt";
+import { DefaultPlayer as Video } from "react-html5video";
+import "react-html5video/dist/styles.css";
 
 export default function App() {
-  const [text, setText] = useState("");
-
-  const handleSubmit = async event => {
-    event.preventDefault();
-    if (text) {
-      // make request to server to chnage gif subtitle
-    }
-  };
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={gif} className="App-logo" alt="logo" />
-      </header>
-      <form onSubmit={handleSubmit} className="flex justify-center p-5">
-        <input
-          type="text"
-          className="border-black border-solid border-2"
-          onChange={event => setText(event.target.value)}
-          value={text}
-        />
-      </form>
-    </div>
+    <Video
+      autoPlay
+      loop
+      muted
+      controls={["PlayPause", "Seek", "Time", "Volume", "Fullscreen"]}
+      poster=""
+      onCanPlayThrough={() => {
+        // Do stuff
+      }}
+    >
+      <source src={movie} type="video/mp4" />
+      <track
+        label="English"
+        kind="subtitles"
+        srcLang="en"
+        src={subtitles}
+        default
+      />
+    </Video>
   );
 }
