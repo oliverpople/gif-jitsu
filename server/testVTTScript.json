@@ -1,0 +1,33 @@
+{
+  "valid": true,
+  "cues": [
+    {
+      "identifier": "",
+      "start": 0,
+      "end": 1,
+      "text": "Hello world!",
+      "styles": ""
+    },
+    {
+      "identifier": "",
+      "start": 30,
+      "end": 31,
+      "text": "This is a subtitle",
+      "styles": "align:start line:0%"
+    },
+    {
+      "identifier": "",
+      "start": 60,
+      "end": 61,
+      "text": "Foo",
+      "styles": ""
+    },
+    {
+      "identifier": "",
+      "start": 110,
+      "end": 111,
+      "text": "Bar",
+      "styles": ""
+    }
+  ]
+}

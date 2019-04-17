@@ -3,6 +3,8 @@ import movie from "./movie.mp4";
 import subtitles from "./subtitles.vtt";
 import { Player, ControlBar } from "video-react";
 import "video-react/dist/video-react.css";
+import vttParser from "./VTTParser.js";
+import testVTTJson from "./testVTTScript.json";
 
 export default class App extends Component {
   constructor(props, context) {
@@ -11,6 +13,11 @@ export default class App extends Component {
     this.state = {
       playerSource: "https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
     };
+  }
+
+  ///testing parser in console
+  componentDidMount() {
+    console.log(vttParser(testVTTJson));
   }
 
   render() {
@@ -32,7 +39,7 @@ export default class App extends Component {
             srcLang="en-US"
             label="English"
             default
-            src={subtitles}
+            src={vttParser(testVTTJson)}
           />
         </Player>
       </div>
