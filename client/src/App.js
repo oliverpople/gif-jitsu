@@ -1,29 +1,41 @@
-import React, { useState } from "react";
-import gif from "./movie.gif";
+import React, { Component } from "react";
+import movie from "./movie.mp4";
+import subtitles from "./subtitles.vtt";
+import { Player, ControlBar } from "video-react";
+import "video-react/dist/video-react.css";
 
-export default function App() {
-  const [text, setText] = useState("");
+export default class App extends Component {
+  constructor(props, context) {
+    super(props, context);
 
-  const handleSubmit = async event => {
-    event.preventDefault();
-    if (text) {
-      // make request to server to chnage gif subtitle
-    }
-  };
+    this.state = {
+      playerSource: "https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
+    };
+  }
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={gif} className="App-logo" alt="logo" />
-      </header>
-      <form onSubmit={handleSubmit} className="flex justify-center p-5">
-        <input
-          type="text"
-          className="border-black border-solid border-2"
-          onChange={event => setText(event.target.value)}
-          value={text}
-        />
-      </form>
-    </div>
-  );
+  render() {
+    return (
+      <div>
+        <Player
+          fluid={false}
+          width={300}
+          ref="player"
+          videoId="video-1"
+          muted={true}
+          autoPlay={true}
+          loop
+        >
+          <source src={this.state.playerSource} />
+          <ControlBar autoHide={true} />
+          <track
+            kind="captions"
+            srcLang="en-US"
+            label="English"
+            default
+            src={subtitles}
+          />
+        </Player>
+      </div>
+    );
+  }
 }
