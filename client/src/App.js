@@ -15,7 +15,6 @@ export default class App extends Component {
     };
   }
 
-  ///testing parser in console
   componentDidMount() {
     console.log(vttParser(testVTTJson));
   }
