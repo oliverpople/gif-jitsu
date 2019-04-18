@@ -1,34 +1,42 @@
 import React, { Component } from "react";
-// import movie from "./movie.mp4";
+import movie from "./movie.mp4";
 import subtitles from "./subtitles.vtt";
 import { Player, ControlBar } from "video-react";
 import "video-react/dist/video-react.css";
-// import vttParser from "./VTTParser.js";
-// import testVTTJson from "./testVTTScript.json";
+import vttParser from "./VTTParser.js";
+import testVTTJson from "./testVTTScript.json";
 // import webvtt from "node-webvtt";
+
+// import fs from "browserify-fs";
 
 export default class App extends Component {
   constructor(props, context) {
     super(props, context);
 
     this.state = {
-      playerSource: "https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
+      playerSource: movie
     };
   }
 
-  componentDidMount() {
-    // const parsed = webvtt.parse(vttParser(testVTTJson));
+  async componentDidMount() {
+    const subs = "http://localhost:4000/vttparser";
+    console.log(subs);
 
+    let self = this;
     /// updates track as video loads
     this.refs.player.video.video.addEventListener(
       "loadedmetadata",
       function() {
         // We can't dynamically load <tracks> for subtitles, so we have to hook into the onload of the video...
         let track = document.createElement("track");
-        track.kind = "captions";
+        track.kind = "subtitles";
         track.label = "English";
         track.srclang = "en";
-        track.src = subtitles;
+        track.src = subs;
+        track.addEventListener("load", function() {
+          this.mode = "showing";
+          self.refs.player.video.video.textTracks[0].mode = "showing";
+        });
         this.appendChild(track);
       },
       true
@@ -46,6 +54,7 @@ export default class App extends Component {
           muted={true}
           autoPlay={true}
           loop
+          crossOrigin="anonymous"
         >
           <source src={this.state.playerSource} />
           <ControlBar autoHide={true} />
@@ -54,7 +63,7 @@ export default class App extends Component {
             srcLang="en-US"
             label="English"
             default
-            src={""}
+            src=""
           />
         </Player>
       </div>
