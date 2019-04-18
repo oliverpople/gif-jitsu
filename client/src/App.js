@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import movie from "./movie.mp4";
+// import movie from "./movie.mp4";
 import subtitles from "./subtitles.vtt";
 import { Player, ControlBar } from "video-react";
 import "video-react/dist/video-react.css";
-import vttParser from "./VTTParser.js";
+// import vttParser from "./VTTParser.js";
 // import testVTTJson from "./testVTTScript.json";
+// import webvtt from "node-webvtt";
 
 export default class App extends Component {
   constructor(props, context) {
@@ -16,8 +17,9 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    /// updates track BEFORE video loads
-    let self = this;
+    // const parsed = webvtt.parse(vttParser(testVTTJson));
+
+    /// updates track as video loads
     this.refs.player.video.video.addEventListener(
       "loadedmetadata",
       function() {
@@ -27,10 +29,6 @@ export default class App extends Component {
         track.label = "English";
         track.srclang = "en";
         track.src = subtitles;
-        track.addEventListener("load", function() {
-          // this.mode = "showing";
-          // self.refs.player.video.video.textTracks[0].mode = "showing";
-        });
         this.appendChild(track);
       },
       true
