@@ -28,7 +28,6 @@ export default class App extends Component {
       .then(text => {
         this.setState({ subs: text });
       })
-
       .catch(error => {
         console.error(error);
       });
