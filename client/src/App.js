@@ -8,8 +8,6 @@ export default class App extends Component {
   constructor(props, context) {
     super(props, context);
 
-    // this.getData = this.getData.bind(this);
-
     this.state = {
       playerSource: movie,
       subs: ""
@@ -28,56 +26,14 @@ export default class App extends Component {
         return response.text();
       })
       .then(text => {
-        //Create a Blob from the vtt Stream
         const file = new Blob([text], { type: "html/txt" });
-        //Build a URL from the file
         const fileURL = URL.createObjectURL(file);
-        //Store a URL in state
         this.setState({ subs: fileURL });
       })
       .catch(error => {
         console.error(error);
       });
   }
-
-  // async getData() {
-  //   await fetch("http://localhost:4000/vttparser", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json"
-  //     },
-  //     body: JSON.stringify({ data: testVTTJson })
-  //   })
-  //     .then(response => {
-  //       return response.text();
-  //     })
-  //     .catch(error => {
-  //       console.error(error);
-  //     });
-  // }
-
-  // async componentDidMount() {
-  //   let self = this;
-  //   /// updates track as video loads
-  //   this.refs.player.video.video.addEventListener(
-  //     "loadedmetadata",
-  //     function() {
-  //       // We can't dynamically load <tracks> for subtitles, so we have to hook into the onload of the video...
-  //       let track = document.createElement("track");
-  //       track.kind = "subtitles";
-  //       track.label = "English";
-  //       track.srclang = "en";
-  //       track.src = self.state.subs;
-  //       console.log(track.src);
-  //       track.addEventListener("load", function() {
-  //         this.mode = "showing";
-  //         self.refs.player.video.video.textTracks[0].mode = "showing";
-  //       });
-  //       this.appendChild(track);
-  //     },
-  //     true
-  //   );
-  // }
 
   render() {
     return (

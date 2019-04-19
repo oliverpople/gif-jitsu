@@ -14,10 +14,8 @@ router.post("/", async function(req, res) {
     subtitleText,
     "UTF-8"
   );
-
   res.sendFile(path.join(__dirname, "../public", "convertedSubtitles.vtt"));
-  /// then delete file
-  // Add error handling
+  // Need to Add error handling
 });
 
 module.exports = router;
