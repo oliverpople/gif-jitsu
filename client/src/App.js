@@ -1,41 +1,18 @@
 import React, { Component } from "react";
 import movie from "./movie.mp4";
-import subtitles from "./subtitles.vtt";
 import { Player, ControlBar } from "video-react";
 import "video-react/dist/video-react.css";
-import vttParser from "./VTTParser.js";
 import testVTTJson from "./testVTTScript.json";
-// import webvtt from "node-webvtt";
-
-// import fs from "browserify-fs";
 
 export default class App extends Component {
   constructor(props, context) {
     super(props, context);
-    // this.handleSubmit = this.handleSubmit.bind(this);
 
     this.state = {
       playerSource: movie,
       subs: ""
     };
   }
-
-  // async handleSubmit(event) {
-  //   event.preventDefault();
-  //
-  //   const rawResponse = await fetch("http://localhost:4000/vttparser", {
-  //     method: "POST",
-  //     headers: {
-  //       // Accept: "application/json, text/plain, */*",
-  //       "Content-Type": "application/json"
-  //     },
-  //     body: JSON.stringify({ data: testVTTJson })
-  //     // testVTTJson: testVTTJson
-  //   });
-  //
-  //   this.setState({ subs: rawResponse });
-  //   console.log(rawResponse);
-  // }
 
   async componentWillMount() {
     await fetch("http://localhost:4000/vttparser", {
@@ -102,9 +79,6 @@ export default class App extends Component {
             src=""
           />
         </Player>
-        <form onSubmit={this.handleSubmit}>
-          <button type="Submit">Submit VTT json</button>
-        </form>
       </div>
     );
   }
