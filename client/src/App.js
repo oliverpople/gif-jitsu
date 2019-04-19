@@ -12,33 +12,52 @@ import testVTTJson from "./testVTTScript.json";
 export default class App extends Component {
   constructor(props, context) {
     super(props, context);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    // this.handleSubmit = this.handleSubmit.bind(this);
 
     this.state = {
-      playerSource: movie
+      playerSource: movie,
+      subs: ""
     };
   }
 
-  async handleSubmit(event) {
-    event.preventDefault();
+  // async handleSubmit(event) {
+  //   event.preventDefault();
+  //
+  //   const rawResponse = await fetch("http://localhost:4000/vttparser", {
+  //     method: "POST",
+  //     headers: {
+  //       // Accept: "application/json, text/plain, */*",
+  //       "Content-Type": "application/json"
+  //     },
+  //     body: JSON.stringify({ data: testVTTJson })
+  //     // testVTTJson: testVTTJson
+  //   });
+  //
+  //   this.setState({ subs: rawResponse });
+  //   console.log(rawResponse);
+  // }
 
-    const rawResponse = await fetch("http://localhost:4000/vttparser", {
+  async componentWillMount() {
+    await fetch("http://localhost:4000/vttparser", {
       method: "POST",
       headers: {
-        // Accept: "application/json, text/plain, */*",
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ data: testVTTJson })
-      // testVTTJson: testVTTJson
-    });
+    })
+      .then(response => {
+        return response.text();
+      })
+      .then(text => {
+        this.setState({ subs: text });
+      })
 
-    console.log(rawResponse);
+      .catch(error => {
+        console.error(error);
+      });
   }
 
   async componentDidMount() {
-    // const subs = "http://localhost:4000/vttparser";
-    // console.log(subs);
-
     let self = this;
     /// updates track as video loads
     this.refs.player.video.video.addEventListener(
@@ -49,7 +68,7 @@ export default class App extends Component {
         track.kind = "subtitles";
         track.label = "English";
         track.srclang = "en";
-        // track.src = subs;
+        track.src = self.state.subs;
         track.addEventListener("load", function() {
           this.mode = "showing";
           self.refs.player.video.video.textTracks[0].mode = "showing";

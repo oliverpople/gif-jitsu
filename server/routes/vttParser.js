@@ -8,17 +8,19 @@ const subtitleJSON = require("../testVTTScript.json");
 
 var router = express.Router();
 
-router.post("/", function(req, res) {
-  console.log(req.body.data);
+router.post("/", async function(req, res) {
+  const subtitleText = compile(req.body.data);
+  const vttFile = await fs.writeFile(
+    "./public/convertedSubtitles.vtt",
+    subtitleText,
+    "UTF-8"
+  );
   res.sendFile(path.join(__dirname, "../public", "convertedSubtitles.vtt"));
-  // const subtitleText = compile(subtitleJSON);
-  // const vttFile = await fs.writeFile(
-  //   "convertedSubtitles.vtt",
-  //   subtitleText,
-  //   "UTF-8"
-  // );
+
+  /// then delete file
+
   // if (!error) {
-  //   res.send(vttFile);
+  //   res.sendFile(path.join(__dirname, "../public", "convertedSubtitles.vtt"));
   // } else {
   //   res.status(500).json({ error: error });
   // }
