@@ -7,9 +7,9 @@ const subtitleJSON = require("../testVTTScript.json");
 // const convertedFile = require("../convertedSubtitles.txt");
 var router = express.Router();
 
-router.get("/", async function(req, res) {
+router.post("/", function(req, res) {
+  console.log(req.body.testVTTJson);
   res.sendFile(path.join(__dirname, "../public", "convertedSubtitles.vtt"));
-
   // const subtitleText = compile(subtitleJSON);
   // const vttFile = await fs.writeFile(
   //   "convertedSubtitles.vtt",

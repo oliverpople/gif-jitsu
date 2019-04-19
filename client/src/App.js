@@ -12,15 +12,34 @@ import testVTTJson from "./testVTTScript.json";
 export default class App extends Component {
   constructor(props, context) {
     super(props, context);
+    this.handleSubmit = this.handleSubmit.bind(this);
 
     this.state = {
       playerSource: movie
     };
   }
 
+  async handleSubmit(event) {
+    event.preventDefault();
+
+    const rawResponse = await fetch("http://localhost:4000/vttparser", {
+      method: "POST",
+      headers: {
+        // Accept: "application/json, text/plain, */*",
+        "Content-Type": "text/plain"
+      },
+      body: {
+        testVTTJson: JSON.stringify(testVTTJson)
+        // testVTTJson: testVTTJson
+      }
+    });
+
+    console.log(rawResponse);
+  }
+
   async componentDidMount() {
-    const subs = "http://localhost:4000/vttparser";
-    console.log(subs);
+    // const subs = "http://localhost:4000/vttparser";
+    // console.log(subs);
 
     let self = this;
     /// updates track as video loads
@@ -32,7 +51,7 @@ export default class App extends Component {
         track.kind = "subtitles";
         track.label = "English";
         track.srclang = "en";
-        track.src = subs;
+        // track.src = subs;
         track.addEventListener("load", function() {
           this.mode = "showing";
           self.refs.player.video.video.textTracks[0].mode = "showing";
@@ -66,6 +85,9 @@ export default class App extends Component {
             src=""
           />
         </Player>
+        <form onSubmit={this.handleSubmit}>
+          <button type="Submit">Submit VTT json</button>
+        </form>
       </div>
     );
   }
