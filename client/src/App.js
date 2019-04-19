@@ -26,12 +26,10 @@ export default class App extends Component {
       method: "POST",
       headers: {
         // Accept: "application/json, text/plain, */*",
-        "Content-Type": "text/plain"
+        "Content-Type": "application/json"
       },
-      body: {
-        testVTTJson: JSON.stringify(testVTTJson)
-        // testVTTJson: testVTTJson
-      }
+      body: JSON.stringify({ data: testVTTJson })
+      // testVTTJson: testVTTJson
     });
 
     console.log(rawResponse);

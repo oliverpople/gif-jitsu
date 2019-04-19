@@ -5,10 +5,11 @@ const fs = require("fs-extra");
 require("dotenv").config();
 const subtitleJSON = require("../testVTTScript.json");
 // const convertedFile = require("../convertedSubtitles.txt");
+
 var router = express.Router();
 
 router.post("/", function(req, res) {
-  console.log(req.body.testVTTJson);
+  console.log(req.body.data);
   res.sendFile(path.join(__dirname, "../public", "convertedSubtitles.vtt"));
   // const subtitleText = compile(subtitleJSON);
   // const vttFile = await fs.writeFile(
