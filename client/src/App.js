@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import movie from "./movie.mp4";
 import { Player, ControlBar } from "video-react";
 import "video-react/dist/video-react.css";
+import { compile } from "node-webvtt";
 // import testVTTJson from "./testVTTScript.json";
 
 export default class App extends Component {
@@ -15,7 +16,18 @@ export default class App extends Component {
       playerSource: movie,
       subs: "",
       value: "",
-      inputJson: {}
+      inputJson: {
+        valid: true,
+        cues: [
+          {
+            identifier: "",
+            start: 0,
+            end: 10,
+            text: "Initial test caption text!!",
+            styles: ""
+          }
+        ]
+      }
     };
   }
 
@@ -41,24 +53,10 @@ export default class App extends Component {
   };
 
   async componentWillMount() {
-    await fetch("http://localhost:4000/vttparser", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ data: this.state.inputJson })
-    })
-      .then(response => {
-        return response.text();
-      })
-      .then(text => {
-        const file = new Blob([text], { type: "html/txt" });
-        const fileURL = URL.createObjectURL(file);
-        this.setState({ subs: fileURL });
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    const subtitleText = compile(this.state.inputJson);
+    const file = new Blob([subtitleText], { type: "html/txt" });
+    const fileURL = URL.createObjectURL(file);
+    this.setState({ subs: fileURL });
   }
 
   render() {
