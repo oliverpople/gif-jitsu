@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import movie from "./movie.mp4";
-import { Player, ControlBar } from "video-react";
-import "video-react/dist/video-react.css";
 import { compile } from "node-webvtt";
+import VideoPlayer from "./VideoPlayer";
 
 export default class App extends Component {
   constructor(props, context) {
@@ -10,23 +9,15 @@ export default class App extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.renderVideoWithSubInputs = this.renderVideoWithSubInputs.bind(this);
+    this.compileJsonSubtitleInput = this.compileJsonSubtitleInput.bind(this);
 
     this.state = {
       playerSource: movie,
       subs: "",
       value: "",
-      inputJson: {
-        valid: true,
-        cues: [
-          {
-            identifier: "",
-            start: 0,
-            end: 10,
-            text: "Initial test caption text!!",
-            styles: ""
-          }
-        ]
-      }
+      inputJson: {},
+      submitted: false
     };
   }
 
@@ -34,7 +25,7 @@ export default class App extends Component {
     this.setState({ value: event.target.value });
   }
 
-  handleSubmit = event => {
+  handleSubmit = async event => {
     event.preventDefault();
     const inputJson = {
       valid: true,
@@ -48,10 +39,18 @@ export default class App extends Component {
         }
       ]
     };
-    this.setState({ inputJson });
+    await this.setState({ inputJson });
+    await this.compileJsonSubtitleInput();
+    this.setState({ submitted: true });
   };
 
-  async componentWillMount() {
+  renderVideoWithSubInputs() {
+    if (this.state.submitted) {
+      return <VideoPlayer playerSource={movie} subs={this.state.subs} />;
+    }
+  }
+
+  async compileJsonSubtitleInput() {
     const subtitleText = compile(this.state.inputJson);
     const file = new Blob([subtitleText], { type: "html/txt" });
     const fileURL = URL.createObjectURL(file);
@@ -61,26 +60,7 @@ export default class App extends Component {
   render() {
     return (
       <div>
-        <Player
-          fluid={false}
-          width={300}
-          ref="player"
-          videoId="video-1"
-          muted={true}
-          autoPlay={true}
-          loop
-          crossOrigin="anonymous"
-        >
-          <source src={this.state.playerSource} />
-          <ControlBar autoHide={true} />
-          <track
-            kind="captions"
-            srcLang="en-US"
-            label="English"
-            default
-            src={this.state.subs}
-          />
-        </Player>
+        {this.renderVideoWithSubInputs()}
         <form onSubmit={this.handleSubmit}>
           <label>
             Caption text:
