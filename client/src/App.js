@@ -3,7 +3,6 @@ import movie from "./movie.mp4";
 import { Player, ControlBar } from "video-react";
 import "video-react/dist/video-react.css";
 import { compile } from "node-webvtt";
-// import testVTTJson from "./testVTTScript.json";
 
 export default class App extends Component {
   constructor(props, context) {
