@@ -2,17 +2,43 @@ import React, { Component } from "react";
 import movie from "./movie.mp4";
 import { Player, ControlBar } from "video-react";
 import "video-react/dist/video-react.css";
-import testVTTJson from "./testVTTScript.json";
+// import testVTTJson from "./testVTTScript.json";
 
 export default class App extends Component {
   constructor(props, context) {
     super(props, context);
 
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+
     this.state = {
       playerSource: movie,
-      subs: ""
+      subs: "",
+      value: "",
+      inputJson: {}
     };
   }
+
+  handleChange(event) {
+    this.setState({ value: event.target.value });
+  }
+
+  handleSubmit = event => {
+    event.preventDefault();
+    const inputJson = {
+      valid: true,
+      cues: [
+        {
+          identifier: "",
+          start: 0,
+          end: 10,
+          text: this.state.value,
+          styles: ""
+        }
+      ]
+    };
+    this.setState({ inputJson });
+  };
 
   async componentWillMount() {
     await fetch("http://localhost:4000/vttparser", {
@@ -20,7 +46,7 @@ export default class App extends Component {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ data: testVTTJson })
+      body: JSON.stringify({ data: this.state.inputJson })
     })
       .then(response => {
         return response.text();
@@ -58,6 +84,17 @@ export default class App extends Component {
             src={this.state.subs}
           />
         </Player>
+        <form onSubmit={this.handleSubmit}>
+          <label>
+            Caption text:
+            <input
+              type="text"
+              value={this.state.value}
+              onChange={this.handleChange}
+            />
+          </label>
+          <input type="submit" value="Submit" />
+        </form>
       </div>
     );
   }
