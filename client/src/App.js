@@ -8,7 +8,7 @@ export default class App extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.setInputJson = this.setInputJson.bind(this);
+    this.setSubtitleInputJson = this.setSubtitleInputJson.bind(this);
     this.renderVideoWithSubInputs = this.renderVideoWithSubInputs.bind(this);
     this.compileJsonSubtitleInput = this.compileJsonSubtitleInput.bind(this);
 
@@ -19,7 +19,7 @@ export default class App extends Component {
     };
   }
 
-  async setInputJson(inputJson) {
+  async setSubtitleInputJson(inputJson) {
     await this.setState({ inputJson });
     await this.compileJsonSubtitleInput();
     this.setState({ submitted: true });
@@ -44,7 +44,7 @@ export default class App extends Component {
     return (
       <div>
         {this.renderVideoWithSubInputs()}
-        <SubtitleForm setInputJson={this.setInputJson} />
+        <SubtitleForm setSubtitleInputJson={this.setSubtitleInputJson} />
       </div>
     );
   }
