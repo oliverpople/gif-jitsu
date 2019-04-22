@@ -8,7 +8,7 @@ export default class App extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.setSubtitleInputJson = this.setSubtitleInputJson.bind(this);
+    this.setSubtitles = this.setSubtitles.bind(this);
     this.renderVideoWithSubInputs = this.renderVideoWithSubInputs.bind(this);
 
     this.state = {
@@ -18,7 +18,7 @@ export default class App extends Component {
     };
   }
 
-  async setSubtitleInputJson(inputJson) {
+  async setSubtitles(inputJson) {
     await this.setState({ inputJson });
     const compiledSubs = await SubtitleCompiler(this.state.inputJson);
     this.setState({ compiledSubs });
@@ -36,7 +36,7 @@ export default class App extends Component {
     return (
       <div>
         {this.renderVideoWithSubInputs()}
-        <SubtitleForm setSubtitleInputJson={this.setSubtitleInputJson} />
+        <SubtitleForm setSubtitles={this.setSubtitles} />
       </div>
     );
   }

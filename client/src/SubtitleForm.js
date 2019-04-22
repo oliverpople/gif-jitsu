@@ -31,7 +31,7 @@ export default class SubtitleForm extends Component {
 
   handleSubmit = async event => {
     event.preventDefault();
-    this.props.setSubtitleInputJson(this.state.inputJson);
+    this.props.setSubtitles(this.state.inputJson);
   };
 
   render() {
