@@ -24,9 +24,9 @@ export default class SubtitleForm extends Component {
   }
 
   handleChange(event) {
-    var nestedStateProperty = { ...this.state.inputJson };
-    nestedStateProperty.cues[0][event.target.name] = event.target.value;
-    this.setState({ inputJson: nestedStateProperty });
+    var nestedStateProperties = { ...this.state.inputJson };
+    nestedStateProperties.cues[0][event.target.name] = event.target.value;
+    this.setState({ inputJson: nestedStateProperties });
   }
 
   handleSubmit = async event => {
