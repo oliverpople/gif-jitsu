@@ -35,6 +35,8 @@ export default class SubtitleForm extends Component {
   };
 
   render() {
+    let stateProp = this.state.inputJson.cues[0];
+
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
@@ -43,7 +45,7 @@ export default class SubtitleForm extends Component {
             <input
               name="text"
               type="text"
-              value={this.state.inputJson.cues[0].text}
+              value={stateProp.text}
               onChange={this.handleChange}
             />
           </label>
@@ -52,7 +54,7 @@ export default class SubtitleForm extends Component {
             <input
               name="start"
               type="text"
-              value={this.state.inputJson.cues[0].start}
+              value={stateProp.start}
               onChange={this.handleChange}
             />
           </label>
@@ -61,7 +63,7 @@ export default class SubtitleForm extends Component {
             <input
               name="end"
               type="end"
-              value={this.state.inputJson.cues[0].end}
+              value={stateProp.end}
               onChange={this.handleChange}
             />
           </label>
