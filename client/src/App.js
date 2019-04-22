@@ -15,14 +15,16 @@ export default class App extends Component {
     this.state = {
       playerSource: movie,
       subs: "",
-      value: "",
+      subtitleText: "",
+      startTime: "",
+      endTime: "",
       inputJson: {},
       submitted: false
     };
   }
 
   handleChange(event) {
-    this.setState({ value: event.target.value });
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   handleSubmit = async event => {
@@ -32,9 +34,9 @@ export default class App extends Component {
       cues: [
         {
           identifier: "",
-          start: 0,
-          end: 10,
-          text: this.state.value,
+          start: this.state.startTime,
+          end: this.state.endTime,
+          text: this.state.subtitleText,
           styles: ""
         }
       ]
@@ -63,10 +65,29 @@ export default class App extends Component {
         {this.renderVideoWithSubInputs()}
         <form onSubmit={this.handleSubmit}>
           <label>
-            Caption text:
+            Subtitle text:
             <input
+              name="subtitleText"
               type="text"
-              value={this.state.value}
+              value={this.state.subtitleText}
+              onChange={this.handleChange}
+            />
+          </label>
+          <label>
+            Start time:
+            <input
+              name="startTime"
+              type="text"
+              value={this.state.startTime}
+              onChange={this.handleChange}
+            />
+          </label>
+          <label>
+            End time:
+            <input
+              name="endTime"
+              type="text"
+              value={this.state.endTime}
               onChange={this.handleChange}
             />
           </label>
