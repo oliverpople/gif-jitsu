@@ -1,0 +1,29 @@
+{
+  "name": "gif-jitsu",
+  "version": "1.0.0",
+  "description": "Video to gif converter.",
+  "main": "index.js",
+  "dependencies": {
+    "concurrently": "^4.1.0",
+    "gifify": "^2.4.3",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "^2.1.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"cd server && node index.js\" \"cd client && npm start\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oliverpople/gif-jitsu.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oliverpople/gif-jitsu/issues"
+  },
+  "homepage": "https://github.com/oliverpople/gif-jitsu#readme"
+}

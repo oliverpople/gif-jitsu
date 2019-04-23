@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import movie from "./movie.mp4";
-import SubtitleCompiler from "./modules/SubtitleCompiler";
+import SubtitleCompiler from "./utils/SubtitleCompiler";
 import VideoPlayer from "./VideoPlayer";
 import SubtitleForm from "./SubtitleForm";
+import DbHandler from "./DbHandler";
 
 export default class App extends Component {
   constructor(props, context) {
@@ -27,7 +28,10 @@ export default class App extends Component {
   renderVideoWithSubInputs() {
     if (this.state.inputJson.hasOwnProperty("valid")) {
       return (
-        <VideoPlayer playerSource={movie} subs={this.state.compiledSubs} />
+        <VideoPlayer
+          playerSource={this.state.playerSource}
+          subs={this.state.compiledSubs}
+        />
       );
     }
   }
@@ -37,6 +41,7 @@ export default class App extends Component {
       <div>
         {this.renderVideoWithSubInputs()}
         <SubtitleForm setSubtitles={this.setSubtitles} />
+        <DbHandler />
       </div>
     );
   }
