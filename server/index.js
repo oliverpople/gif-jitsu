@@ -7,7 +7,7 @@ var cors = require("cors");
 const Data = require("./data");
 const mongoose = require("mongoose");
 const port = 4000;
-
+var ytdl = require("./routes/ytdl");
 const app = express().use("*", cors());
 const router = express.Router();
 
@@ -37,6 +37,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => res.send("Hello World!"));
+
+app.use("/ytdl", ytdl);
 
 // this is our get method
 // this method fetches all available data in our database
