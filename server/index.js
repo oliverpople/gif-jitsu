@@ -6,10 +6,10 @@ var cookieParser = require("cookie-parser");
 var cors = require("cors");
 const mongoose = require("mongoose");
 const port = 4000;
-var ytdl = require("./routes/ytdl");
-var CRUD = require("./routes/CRUD");
 const app = express().use("*", cors());
 const router = express.Router();
+var ytdl = require("./routes/ytdl");
+var CRUD = require("./routes/CRUD");
 
 // this is our MongoDB database
 const dbRoute = process.env.DB_ROUTE;
@@ -35,12 +35,9 @@ app.use(express.static(path.join(__dirname, "public")));
 // append /api for our http requests
 app.use("/", router);
 
-app.get("/", (req, res) => res.send("Hello World!"));
+// app.get("/", (req, res) => res.send("Hello World!"));
 app.use("/ytdl", ytdl);
-app.use("/getData", CRUD);
-app.use("/updateData", CRUD);
-app.use("/deleteData", CRUD);
-app.use("/putData", CRUD);
+app.use("/crud", CRUD);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 

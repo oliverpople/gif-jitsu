@@ -41,7 +41,7 @@ export default class DbHandler extends Component {
   // our first get method that uses our backend api to
   // fetch data from our data base
   getDataFromDb = () => {
-    fetch("http://localhost:4000/getData")
+    fetch("http://localhost:4000/crud/getData")
       .then(data => data.json())
       .then(res => this.setState({ data: res.data }));
   };
@@ -55,7 +55,7 @@ export default class DbHandler extends Component {
       ++idToBeAdded;
     }
 
-    axios.post("http://localhost:4000/putData", {
+    axios.post("http://localhost:4000/crud/putData", {
       id: idToBeAdded,
       message: message
     });
@@ -71,7 +71,7 @@ export default class DbHandler extends Component {
       }
     });
 
-    axios.delete("http://localhost:4000/deleteData", {
+    axios.delete("http://localhost:4000/crud/deleteData", {
       data: {
         id: objIdToDelete
       }
@@ -88,7 +88,7 @@ export default class DbHandler extends Component {
       }
     });
 
-    axios.post("http://localhost:4000/updateData", {
+    axios.post("http://localhost:4000/crud/updateData", {
       id: objIdToUpdate,
       update: { message: updateToApply }
     });
