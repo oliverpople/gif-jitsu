@@ -8,6 +8,7 @@ export default class SubtitleForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
 
     this.state = {
+      YTUrl: "",
       inputJson: {
         valid: true,
         cues: [
@@ -24,14 +25,19 @@ export default class SubtitleForm extends Component {
   }
 
   handleChange(event) {
-    var nestedStateProperties = { ...this.state.inputJson };
-    nestedStateProperties.cues[0][event.target.name] = event.target.value;
-    this.setState({ inputJson: nestedStateProperties });
+    if (event.target.name === "YTUrl") {
+      this.setState({ YTUrl: event.target.value });
+    } else {
+      var nestedStateProperties = { ...this.state.inputJson };
+      nestedStateProperties.cues[0][event.target.name] = event.target.value;
+      this.setState({ inputJson: nestedStateProperties });
+    }
   }
 
   handleSubmit = async event => {
     event.preventDefault();
     this.props.setSubtitles(this.state.inputJson);
+    this.props.convertURLToMP4(this.state.YTUrl);
   };
 
   render() {
@@ -40,6 +46,15 @@ export default class SubtitleForm extends Component {
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
+          <label>
+            YouTube URL:
+            <input
+              name="YTUrl"
+              type="text"
+              value={this.state.YTUrl}
+              onChange={this.handleChange}
+            />
+          </label>
           <label>
             Subtitle text:
             <input
