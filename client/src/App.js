@@ -3,6 +3,7 @@ import movie from "./movie.mp4";
 import SubtitleCompiler from "./modules/SubtitleCompiler";
 import VideoPlayer from "./VideoPlayer";
 import SubtitleForm from "./SubtitleForm";
+import DbHandler from "./DbHandler";
 
 export default class App extends Component {
   constructor(props, context) {
@@ -37,6 +38,7 @@ export default class App extends Component {
       <div>
         {this.renderVideoWithSubInputs()}
         <SubtitleForm setSubtitles={this.setSubtitles} />
+        <DbHandler />
       </div>
     );
   }
