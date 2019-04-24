@@ -33,10 +33,10 @@ export default class App extends Component {
     axios.post("http://localhost:4000/ytdl/convertURLToMP4", {
       YTUrl: this.state.YTUrl
     });
-    this.getMP4();
+    this.streamMP4();
   }
 
-  getMP4 = async () => {
+  streamMP4 = async () => {
     fetch("http://localhost:4000/ytdl/streamMP4", {
       method: "GET"
     })
