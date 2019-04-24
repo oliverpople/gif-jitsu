@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import movie from "./movie.mp4";
 import SubtitleCompiler from "./utils/SubtitleCompiler";
 import VideoPlayer from "./VideoPlayer";
-import SubtitleForm from "./SubtitleForm";
+import Form from "./Form";
 import DbHandler from "./DbHandler";
 import axios from "axios";
 
@@ -11,7 +11,7 @@ export default class App extends Component {
     super(props, context);
 
     this.setSubtitles = this.setSubtitles.bind(this);
-    this.convertURLToMP4 = this.convertURLToMP4.bind(this);
+    this.convertURLToMP4Stream = this.convertURLToMP4Stream.bind(this);
     this.renderVideoWithSubInputs = this.renderVideoWithSubInputs.bind(this);
 
     this.state = {
@@ -28,7 +28,7 @@ export default class App extends Component {
     this.setState({ compiledSubs });
   }
 
-  async convertURLToMP4(YTUrl) {
+  async convertURLToMP4Stream(YTUrl) {
     await this.setState({ YTUrl });
     axios.post("http://localhost:4000/ytdl/convertURLToMP4", {
       YTUrl: this.state.YTUrl
@@ -68,11 +68,11 @@ export default class App extends Component {
     return (
       <div>
         {this.renderVideoWithSubInputs()}
-        <SubtitleForm
-          convertURLToMP4={this.convertURLToMP4}
+        <Form
+          convertURLToMP4Stream={this.convertURLToMP4Stream}
           setSubtitles={this.setSubtitles}
         />
-        <DbHandler />
+        {/*<DbHandler /> */}
       </div>
     );
   }

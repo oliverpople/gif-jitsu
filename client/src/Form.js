@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-export default class SubtitleForm extends Component {
+export default class Form extends Component {
   constructor(props, context) {
     super(props, context);
 
@@ -37,7 +37,7 @@ export default class SubtitleForm extends Component {
   handleSubmit = async event => {
     event.preventDefault();
     this.props.setSubtitles(this.state.inputJson);
-    this.props.convertURLToMP4(this.state.YTUrl);
+    this.props.convertURLToMP4Stream(this.state.YTUrl);
   };
 
   render() {
