@@ -41,7 +41,7 @@ export default class Form extends Component {
   };
 
   render() {
-    let stateProp = this.state.inputJson.cues[0];
+    let { text, start, end } = this.state.inputJson.cues[0];
 
     return (
       <div>
@@ -60,7 +60,7 @@ export default class Form extends Component {
             <input
               name="text"
               type="text"
-              value={stateProp.text}
+              value={text}
               onChange={this.handleChange}
             />
           </label>
@@ -69,7 +69,7 @@ export default class Form extends Component {
             <input
               name="start"
               type="text"
-              value={stateProp.start}
+              value={start}
               onChange={this.handleChange}
             />
           </label>
@@ -78,7 +78,7 @@ export default class Form extends Component {
             <input
               name="end"
               type="end"
-              value={stateProp.end}
+              value={end}
               onChange={this.handleChange}
             />
           </label>
