@@ -16,14 +16,14 @@ export default class App extends Component {
     this.state = {
       playerSource: "",
       compiledSubs: "",
-      inputJson: {},
+      inputSubsJson: {},
       YTUrl: ""
     };
   }
 
-  async setSubtitles(inputJson) {
-    await this.setState({ inputJson });
-    const compiledSubs = await SubtitleCompiler(this.state.inputJson);
+  async setSubtitles(inputSubsJson) {
+    await this.setState({ inputSubsJson });
+    const compiledSubs = await SubtitleCompiler(this.state.inputSubsJson);
     this.setState({ compiledSubs });
   }
 
