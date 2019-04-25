@@ -9,7 +9,7 @@ export default class Form extends Component {
 
     this.state = {
       YTUrl: "",
-      inputJson: {
+      inputSubsJson: {
         valid: true,
         cues: [
           {
@@ -28,20 +28,20 @@ export default class Form extends Component {
     if (event.target.name === "YTUrl") {
       this.setState({ YTUrl: event.target.value });
     } else {
-      var nestedStateProperties = { ...this.state.inputJson };
+      var nestedStateProperties = { ...this.state.inputSubsJson };
       nestedStateProperties.cues[0][event.target.name] = event.target.value;
-      this.setState({ inputJson: nestedStateProperties });
+      this.setState({ inputSubsJson: nestedStateProperties });
     }
   }
 
   handleSubmit = async event => {
     event.preventDefault();
-    this.props.setSubtitles(this.state.inputJson);
+    this.props.setSubtitles(this.state.inputSubsJson);
     this.props.convertURLToMP4Stream(this.state.YTUrl);
   };
 
   render() {
-    let stateProp = this.state.inputJson.cues[0];
+    let { text, start, end } = this.state.inputSubsJson.cues[0];
 
     return (
       <div>
@@ -60,7 +60,7 @@ export default class Form extends Component {
             <input
               name="text"
               type="text"
-              value={stateProp.text}
+              value={text}
               onChange={this.handleChange}
             />
           </label>
@@ -69,7 +69,7 @@ export default class Form extends Component {
             <input
               name="start"
               type="text"
-              value={stateProp.start}
+              value={start}
               onChange={this.handleChange}
             />
           </label>
@@ -78,7 +78,7 @@ export default class Form extends Component {
             <input
               name="end"
               type="end"
-              value={stateProp.end}
+              value={end}
               onChange={this.handleChange}
             />
           </label>

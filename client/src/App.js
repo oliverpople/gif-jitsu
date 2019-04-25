@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import movie from "./movie.mp4";
 import SubtitleCompiler from "./utils/SubtitleCompiler";
 import VideoPlayer from "./VideoPlayer";
 import Form from "./Form";
@@ -12,19 +11,19 @@ export default class App extends Component {
 
     this.setSubtitles = this.setSubtitles.bind(this);
     this.convertURLToMP4Stream = this.convertURLToMP4Stream.bind(this);
-    this.renderVideoWithSubInputs = this.renderVideoWithSubInputs.bind(this);
+    this.renderVideoWithProps = this.renderVideoWithProps.bind(this);
 
     this.state = {
       playerSource: "",
       compiledSubs: "",
-      inputJson: {},
+      inputSubsJson: {},
       YTUrl: ""
     };
   }
 
-  async setSubtitles(inputJson) {
-    await this.setState({ inputJson });
-    const compiledSubs = await SubtitleCompiler(this.state.inputJson);
+  async setSubtitles(inputSubsJson) {
+    await this.setState({ inputSubsJson });
+    const compiledSubs = await SubtitleCompiler(this.state.inputSubsJson);
     this.setState({ compiledSubs });
   }
 
@@ -50,11 +49,8 @@ export default class App extends Component {
       });
   };
 
-  renderVideoWithSubInputs() {
-    if (
-      this.state.inputJson.hasOwnProperty("valid") &&
-      this.state.playerSource !== ""
-    ) {
+  renderVideoWithProps() {
+    if (this.state.compiledSubs && this.state.playerSource !== "") {
       return (
         <VideoPlayer
           playerSource={this.state.playerSource}
@@ -67,7 +63,7 @@ export default class App extends Component {
   render() {
     return (
       <div>
-        {this.renderVideoWithSubInputs()}
+        {this.renderVideoWithProps()}
         <Form
           convertURLToMP4Stream={this.convertURLToMP4Stream}
           setSubtitles={this.setSubtitles}
