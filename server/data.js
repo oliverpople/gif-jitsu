@@ -7,7 +7,7 @@ const DataSchema = new Schema(
     id: Number,
     YTUrl: String,
     inputSubsJson: {
-      valid: true,
+      valid: Boolean,
       cues: [
         {
           identifier: String,

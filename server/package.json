@@ -17,9 +17,10 @@
     "express": "^4.16.4",
     "gifify": "^2.4.3",
     "gridfs-stream": "^1.1.1",
+    "mongodb": "2.1.0",
     "mongoose": "^5.5.3",
     "morgan": "^1.9.1",
-    "node-webvtt": "^1.3.0",
+    "node-webvtt": "^1.5.0",
     "ytdl-core": "^0.29.1"
   }
 }
