@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post("/convertURLToMP4", (req, res) => {
   var videoMp4Stream = ytdl(req.body.YTUrl).pipe(
-    fs.createWriteStream("video.mp4")
+    fs.createWriteStream("convertedVideo.mp4")
   );
 
   videoMp4Stream.on("finish", function() {
@@ -21,9 +21,9 @@ router.post("/convertURLToMP4", (req, res) => {
       function(error, db) {
         assert.ifError(error);
 
-        var bucket = new mongodb.GridFSBucket(db);
+        var bucket = new mongodb.GridFSBucket(db, { bucketName: "videos" });
 
-        fs.createReadStream("video.mp4")
+        fs.createReadStream("convertedVideo.mp4")
           .pipe(bucket.openUploadStream("dbVideo.mp4"))
           .on("error", function(error) {
             assert.ifError(error);
@@ -32,6 +32,7 @@ router.post("/convertURLToMP4", (req, res) => {
           .on("finish", function() {
             console.log("Video added the database!");
             res.status(200).json({ status: "ok" });
+            fs.unlink("convertedVideo.mp4", function(err) {});
           });
       }
     );
@@ -47,7 +48,7 @@ router.get("/streamMP4", (req, res) => {
     function(error, db) {
       assert.ifError(error);
 
-      var bucket = new mongodb.GridFSBucket(db);
+      var bucket = new mongodb.GridFSBucket(db, { bucketName: "videos" });
 
       bucket
         .openDownloadStreamByName("dbVideo.mp4")
