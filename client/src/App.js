@@ -11,6 +11,7 @@ export default class App extends Component {
 
     this.setSubtitles = this.setSubtitles.bind(this);
     this.convertURLToMP4Stream = this.convertURLToMP4Stream.bind(this);
+    this.streamMP4 = this.streamMP4.bind(this);
     this.renderVideoWithProps = this.renderVideoWithProps.bind(this);
 
     this.state = {
@@ -29,16 +30,20 @@ export default class App extends Component {
 
   async convertURLToMP4Stream(YTUrl) {
     await this.setState({ YTUrl });
-    axios.post("http://localhost:4000/ytdl/convertURLToMP4", {
-      YTUrl: this.state.YTUrl
-    });
-    this.streamMP4();
+    axios
+      .post("http://localhost:4000/ytdl/convertURLToMP4", {
+        YTUrl: this.state.YTUrl
+      })
+      .then(res => {
+        if (res.status === 200) {
+          this.streamMP4();
+        }
+      })
+      .catch(error => console.log(error));
   }
 
-  streamMP4 = async () => {
-    fetch("http://localhost:4000/ytdl/streamMP4", {
-      method: "GET"
-    })
+  streamMP4() {
+    fetch("http://localhost:4000/ytdl/streamMP4")
       .then(re => re.blob())
       .then(blob => URL.createObjectURL(blob))
       .then(url => {
@@ -47,7 +52,7 @@ export default class App extends Component {
       .catch(err => {
         console.log(err);
       });
-  };
+  }
 
   renderVideoWithProps() {
     if (this.state.compiledSubs && this.state.playerSource !== "") {
