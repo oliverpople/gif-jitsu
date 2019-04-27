@@ -3,7 +3,6 @@ require("dotenv").config();
 var assert = require("assert");
 var fs = require("fs");
 var mongodb = require("mongodb");
-var mongoose = require("mongoose");
 var express = require("express");
 const router = express.Router();
 
@@ -51,15 +50,15 @@ router.get("/streamMP4", (req, res) => {
       var bucket = new mongodb.GridFSBucket(db, { bucketName: "videos" });
 
       bucket
-        .openDownloadStreamByName("dbVideo.mp4")
+        .openDownloadStreamByName("dbVideo.mp4", { revision: -1 })
         .pipe(fs.createWriteStream("outputVideo.mp4"))
         .on("error", function(error) {
           assert.ifError(error);
         })
         .on("finish", function() {
           console.log("Downloaded video to Server!");
-          const src = fs.createReadStream("outputVideo.mp4");
-          src.pipe(res);
+          fs.createReadStream("outputVideo.mp4").pipe(res);
+          fs.unlink("outputVideo.mp4", function(err) {});
         });
     }
   );
