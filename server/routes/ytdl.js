@@ -12,29 +12,37 @@ router.post("/convertURLToMP4", (req, res) => {
   );
 
   videoMp4Stream.on("finish", function() {
-    var uri = process.env.DB_ROUTE;
-
-    mongodb.MongoClient.connect(
-      uri,
-      { useNewUrlParser: true },
-      function(error, db) {
-        assert.ifError(error);
-
-        var bucket = new mongodb.GridFSBucket(db, { bucketName: "videos" });
-
-        fs.createReadStream("convertedVideo.mp4")
-          .pipe(bucket.openUploadStream("dbVideo.mp4"))
-          .on("error", function(error) {
-            assert.ifError(error);
-            res.status(500).json({ error: "Internal server error" });
-          })
-          .on("finish", function() {
-            console.log("Video added the database!");
-            res.status(200).json({ status: "ok" });
-            fs.unlink("convertedVideo.mp4", function(err) {});
-          });
-      }
+    var videoMp4Stream = ytdl(req.body.YTUrl).pipe(
+      fs.createWriteStream("convertedVideo.mp4")
     );
+
+    videoMp4Stream.on("finish", function() {
+      var uri = process.env.DB_ROUTE;
+
+      mongodb.MongoClient.connect(
+        uri,
+        { useNewUrlParser: true },
+        function(error, db) {
+          assert.ifError(error);
+
+          var bucket = new mongodb.GridFSBucket(db, { bucketName: "videos" });
+          var readStream = fs.createReadStream("convertedVideo.mp4");
+          var uploadStream = bucket.openUploadStream("testVideo.mp4");
+
+          readStream
+            .pipe(uploadStream)
+            .on("error", function(error) {
+              assert.ifError(error);
+              res.status(500).json({ error: "Internal server error" });
+            })
+            .on("finish", function() {
+              console.log("Video added the database!");
+              res.status(200).json({ status: "ok" });
+              fs.unlink("convertedVideo.mp4", function(err) {});
+            });
+        }
+      );
+    });
   });
 });
 
@@ -49,9 +57,11 @@ router.get("/streamMP4", (req, res) => {
 
       var bucket = new mongodb.GridFSBucket(db, { bucketName: "videos" });
 
-      bucket
-        .openDownloadStreamByName("dbVideo.mp4", { revision: -1 })
-        .pipe(fs.createWriteStream("outputVideo.mp4"))
+      var downloadStream = bucket.openDownloadStreamByName("testVideo.mp4");
+      var writeStream = fs.createWriteStream("outputVideo.mp4");
+
+      downloadStream
+        .pipe(writeStream)
         .on("error", function(error) {
           assert.ifError(error);
         })
