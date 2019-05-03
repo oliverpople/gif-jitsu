@@ -9,10 +9,12 @@ export default class App extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.setSubtitles = this.setSubtitles.bind(this);
-    this.convertURLToMP4Stream = this.convertURLToMP4Stream.bind(this);
-    this.streamMP4 = this.streamMP4.bind(this);
-    this.renderVideoWithProps = this.renderVideoWithProps.bind(this);
+    this.setSubtitlesWithForm = this.setSubtitlesWithForm.bind(this);
+    this.setYTUrlWithForm = this.setYTUrlWithForm.bind(this);
+    this.convertURLToMP4OnDb = this.convertURLToMP4OnDb.bind(this);
+    this.getUrlStreamForMostRecentMP4OnDb = this.getUrlStreamForMostRecentMP4OnDb.bind(
+      this
+    );
 
     this.state = {
       playerSource: "",
@@ -22,27 +24,30 @@ export default class App extends Component {
     };
   }
 
-  async setSubtitles(inputSubsJson) {
+  async setSubtitlesWithForm(inputSubsJson) {
     await this.setState({ inputSubsJson });
     const compiledSubs = await SubtitleCompiler(this.state.inputSubsJson);
     this.setState({ compiledSubs });
   }
 
-  async convertURLToMP4Stream(YTUrl) {
+  async setYTUrlWithForm(YTUrl) {
     await this.setState({ YTUrl });
+  }
+
+  async convertURLToMP4OnDb() {
     axios
       .post("http://localhost:4000/ytdl/convertURLToMP4", {
         YTUrl: this.state.YTUrl
       })
       .then(res => {
         if (res.status === 200) {
-          this.streamMP4();
+          console.log("Video added the database!");
         }
       })
       .catch(error => console.log(error));
   }
 
-  streamMP4() {
+  async getUrlStreamForMostRecentMP4OnDb() {
     fetch("http://localhost:4000/ytdl/streamMP4")
       .then(re => re.blob())
       .then(blob => URL.createObjectURL(blob))
@@ -54,26 +59,24 @@ export default class App extends Component {
       });
   }
 
-  renderVideoWithProps() {
-    if (this.state.compiledSubs && this.state.playerSource !== "") {
-      return (
-        <VideoPlayer
-          playerSource={this.state.playerSource}
-          subs={this.state.compiledSubs}
-        />
-      );
-    }
-  }
-
   render() {
     return (
       <div>
-        {this.renderVideoWithProps()}
         <Form
-          convertURLToMP4Stream={this.convertURLToMP4Stream}
-          setSubtitles={this.setSubtitles}
+          setYTUrlWithForm={this.setYTUrlWithForm}
+          setSubtitlesWithForm={this.setSubtitlesWithForm}
         />
-        {/*<DbHandler /> */}
+        <button onClick={this.convertURLToMP4OnDb}>
+          Convert YouTube url to MP3 and store on db.
+        </button>
+        <button onClick={this.getUrlStreamForMostRecentMP4OnDb}>
+          Get url stream for most recent mp4 from db.
+        </button>
+        <VideoPlayer
+          key={this.state.playerSource}
+          playerSource={this.state.playerSource}
+          subs={this.state.compiledSubs}
+        />
       </div>
     );
   }

@@ -36,8 +36,8 @@ export default class Form extends Component {
 
   handleSubmit = async event => {
     event.preventDefault();
-    this.props.setSubtitles(this.state.inputSubsJson);
-    this.props.convertURLToMP4Stream(this.state.YTUrl);
+    this.props.setSubtitlesWithForm(this.state.inputSubsJson);
+    this.props.setYTUrlWithForm(this.state.YTUrl);
   };
 
   render() {

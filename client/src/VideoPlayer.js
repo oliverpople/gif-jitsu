@@ -5,7 +5,19 @@ import "video-react/dist/video-react.css";
 export default class VideoPlayer extends Component {
   constructor(props, context) {
     super(props, context);
+
+    // Props not updating after inital render
+    console.log(this.props.playerSource);
+    console.log(typeof this.props.playerSource);
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.playerSource !== prevProps.playerSource) {
+      this.refs.player.load();
+    }
+  }
+
+  componentDidMount() {}
 
   render() {
     return (
