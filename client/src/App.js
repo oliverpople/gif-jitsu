@@ -17,6 +17,11 @@ export default class App extends Component {
     );
 
     this.state = {
+      playerSourceArray: [
+        "http://media.w3.org/2010/05/sintel/trailer.mp4",
+        "http://media.w3.org/2010/05/bunny/trailer.mp4",
+        "http://media.w3.org/2010/05/bunny/movie.mp4"
+      ],
       playerSource: null,
       compiledSubs: "",
       inputSubsJson: {},
@@ -59,6 +64,18 @@ export default class App extends Component {
       });
   }
 
+  videoList = () => {
+    const videoList = this.state.playerSourceArray.map(playerSource => (
+      <li key={playerSource}>
+        <VideoPlayer
+          playerSource={playerSource}
+          subs={this.state.compiledSubs}
+        />
+      </li>
+    ));
+    return <ul>{videoList}</ul>;
+  };
+
   render() {
     return (
       <div>
@@ -81,6 +98,10 @@ export default class App extends Component {
         ) : (
           <div />
         )}
+        <button onClick={this.getAllVideoStreams}>
+          Get url stream for all videos
+        </button>
+        {this.state.playerSourceArray ? this.videoList() : <div />}
       </div>
     );
   }

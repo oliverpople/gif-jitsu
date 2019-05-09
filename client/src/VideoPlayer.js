@@ -16,7 +16,6 @@ export default class VideoPlayer extends Component {
           muted={true}
           autoPlay={true}
           loop
-          crossOrigin="anonymous"
           src={this.props.playerSource}
         >
           <track
