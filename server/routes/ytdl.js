@@ -6,7 +6,7 @@ var mongodb = require("mongodb");
 var express = require("express");
 const router = express.Router();
 
-var count;
+var count = 0;
 
 router.post("/convertURLToMP4", (req, res) => {
   count += 1;
@@ -66,6 +66,26 @@ router.get("/streamMP4", (req, res) => {
           console.log("Downloaded video to Server!");
           fs.createReadStream("outputVideo.mp4").pipe(res);
           fs.unlink("outputVideo.mp4", function(err) {});
+        });
+    }
+  );
+});
+
+router.get("/getAllVideoFileNames", (req, res) => {
+  var uri = process.env.DB_ROUTE;
+
+  mongodb.MongoClient.connect(
+    uri,
+    { useNewUrlParser: true },
+    async function(error, db) {
+      assert.ifError(error);
+
+      db.collection("videos.files")
+        .find({}, { filename: 1 })
+        .toArray(function(err, fileNamesArray) {
+          if (err) throw err;
+          res.json({ fileNamesArray });
+          db.close();
         });
     }
   );

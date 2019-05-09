@@ -17,6 +17,7 @@ export default class App extends Component {
     );
 
     this.state = {
+      videoFileNamesArray: [],
       playerSourceArray: [
         "http://media.w3.org/2010/05/sintel/trailer.mp4",
         "http://media.w3.org/2010/05/bunny/trailer.mp4",
@@ -64,6 +65,23 @@ export default class App extends Component {
       });
   }
 
+  getAllVideoFileNames = async () => {
+    // const videoFileNamesArray = [];
+    fetch("http://localhost:4000/ytdl/getAllVideoFileNames");
+    //   .then(re => re.videoFileNames)
+    //   .then(videoFileNames =>
+    //     videoFileNames.map(videoFileName => {
+    //       videoFileNamesArray.push(videoFileName);
+    //     })
+    //   )
+    //   .then(() => {
+    //     this.setState({ videoFileNamesArray });
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   });
+  };
+
   videoList = () => {
     const videoList = this.state.playerSourceArray.map(playerSource => (
       <li key={playerSource}>
@@ -98,8 +116,8 @@ export default class App extends Component {
         ) : (
           <div />
         )}
-        <button onClick={this.getAllVideoStreams}>
-          Get url stream for all videos
+        <button onClick={this.getAllVideoFileNames}>
+          Get names of all video files stored on db
         </button>
         {this.state.playerSourceArray ? this.videoList() : <div />}
       </div>
