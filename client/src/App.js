@@ -17,7 +17,7 @@ export default class App extends Component {
     );
 
     this.state = {
-      playerSource: "",
+      playerSource: null,
       compiledSubs: "",
       inputSubsJson: {},
       YTUrl: ""
@@ -72,11 +72,15 @@ export default class App extends Component {
         <button onClick={this.getUrlStreamForMostRecentMP4OnDb}>
           Get url stream for most recent mp4 from db.
         </button>
-        <VideoPlayer
-          key={this.state.playerSource}
-          playerSource={this.state.playerSource}
-          subs={this.state.compiledSubs}
-        />
+        {this.state.playerSource ? (
+          <VideoPlayer
+            key={this.state.playerSource}
+            playerSource={this.state.playerSource}
+            subs={this.state.compiledSubs}
+          />
+        ) : (
+          <div />
+        )}
       </div>
     );
   }
