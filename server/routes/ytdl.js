@@ -3,13 +3,14 @@ require("dotenv").config();
 var assert = require("assert");
 var fs = require("fs");
 var mongodb = require("mongodb");
+const ObjectID = require("mongodb").ObjectID;
 var express = require("express");
 const router = express.Router();
 
-var count = 0;
+// var count = 0;
 
 router.post("/convertURLToMP4", (req, res) => {
-  count += 1;
+  // count += 1;
   var videoMp4Stream = ytdl(req.body.YTUrl).pipe(
     fs.createWriteStream("convertedVideo.mp4")
   );
@@ -25,7 +26,7 @@ router.post("/convertURLToMP4", (req, res) => {
 
         var bucket = new mongodb.GridFSBucket(db, { bucketName: "videos" });
         var readStream = fs.createReadStream("convertedVideo.mp4");
-        var uploadStream = bucket.openUploadStream(count.toString());
+        var uploadStream = bucket.openUploadStream("video.mp4");
 
         readStream
           .pipe(uploadStream)
@@ -71,8 +72,9 @@ router.get("/streamMP4", (req, res) => {
   );
 });
 
-router.get("/getUrlStreamForVideoWithId", (req, res) => {
+router.post("/getUrlStreamForVideoWithId", (req, res) => {
   var id = req.body.id;
+  var uri = process.env.DB_ROUTE;
 
   mongodb.MongoClient.connect(
     uri,
@@ -82,8 +84,8 @@ router.get("/getUrlStreamForVideoWithId", (req, res) => {
 
       var bucket = new mongodb.GridFSBucket(db, { bucketName: "videos" });
 
-      var downloadStream = bucket.openDownloadStreamById(id);
-      var writeStream = fs.createWriteStream("outputVideo.mp4");
+      var downloadStream = bucket.openDownloadStream(new ObjectID(id));
+      var writeStream = fs.createWriteStream(id + ".mp4");
 
       downloadStream
         .pipe(writeStream)
@@ -92,8 +94,8 @@ router.get("/getUrlStreamForVideoWithId", (req, res) => {
         })
         .on("finish", function() {
           console.log("Downloaded video to Server!");
-          fs.createReadStream("outputVideo.mp4").pipe(res);
-          fs.unlink("outputVideo.mp4", function(err) {});
+          fs.createReadStream(id + ".mp4").pipe(res);
+          fs.unlink(id + ".mp4", function(err) {});
         });
     }
   );

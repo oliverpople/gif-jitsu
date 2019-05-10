@@ -75,7 +75,6 @@ export default class App extends Component {
           data.fileIdsArray
         );
         this.setState({ fileIdsArray: reformattedFileIdsArray });
-        console.log(this.state.fileIdsArray);
       })
       .catch(err => {
         console.log(err);

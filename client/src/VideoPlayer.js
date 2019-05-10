@@ -15,7 +15,14 @@ export default class VideoPlayer extends Component {
   }
 
   getUrlStreamForVideoWithId = async id => {
-    fetch("http://localhost:4000/ytdl/getUrlStreamForVideoWithId", { id })
+    fetch("http://localhost:4000/ytdl/getUrlStreamForVideoWithId", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ id })
+    })
       .then(re => re.blob())
       .then(blob => URL.createObjectURL(blob))
       .then(url => {
