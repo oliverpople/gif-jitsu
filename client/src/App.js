@@ -67,13 +67,12 @@ export default class App extends Component {
 
   getAllVideoFileIdsFromDb = async () => {
     fetch("http://localhost:4000/ytdl/getAllVideoFileIds")
-      .then(re => console.log(re))
-      // .then(fileIdsArray => {
-      // console.log(typeof fileIdsArray);
-      // JSON.stringify(fileIdsArray);
-      // this.setState({ fileIdsArray });
-      // console.log(this.state.fileIdsArray);
-      // })
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        this.setState({ fileIdsArray: data.fileIdsArray });
+      })
       .catch(err => {
         console.log(err);
       });

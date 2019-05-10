@@ -83,6 +83,9 @@ router.get("/getAllVideoFileIds", (req, res) => {
       db.collection("videos.files")
         .find({}, { _id: 1 })
         .toArray(function(err, fileIdsArray) {
+          {
+            $objectToArray: fileIdsArray;
+          }
           if (err) throw err;
           res.json({ fileIdsArray });
           db.close();
