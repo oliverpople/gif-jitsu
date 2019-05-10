@@ -10,8 +10,7 @@ export default class VideoPlayer extends Component {
   }
 
   componentWillMount() {
-    var id = this.props.fileId;
-    this.getUrlStreamForVideoWithId(id);
+    this.getUrlStreamForVideoWithId(this.props.fileId);
   }
 
   getUrlStreamForVideoWithId = async id => {
