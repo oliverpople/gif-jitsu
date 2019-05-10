@@ -8,10 +8,6 @@ export default class App extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.setSubtitlesWithForm = this.setSubtitlesWithForm.bind(this);
-    this.setYTUrlWithForm = this.setYTUrlWithForm.bind(this);
-    this.convertURLToMP4OnDb = this.convertURLToMP4OnDb.bind(this);
-
     this.state = {
       fileIdsArray: [],
       compiledSubs: "",
@@ -20,19 +16,19 @@ export default class App extends Component {
     };
   }
 
-  async setSubtitlesWithForm(inputSubsJson) {
+  setSubtitlesWithForm = async inputSubsJson => {
     await this.setState({ inputSubsJson });
     const compiledSubs = await SubtitleCompiler(this.state.inputSubsJson);
     this.setState({ compiledSubs });
-  }
+  };
 
-  async setYTUrlWithForm(YTUrl) {
+  setYTUrlWithForm = async YTUrl => {
     await this.setState({ YTUrl });
-  }
+  };
 
-  async convertURLToMP4OnDb() {
+  convertURLToMP4OnDb = async () => {
     axios
-      .post("http://localhost:4000/ytdl/convertURLToMP4", {
+      .post("http://localhost:4000/mongodb/convertURLToMP4", {
         YTUrl: this.state.YTUrl
       })
       .then(res => {
@@ -41,10 +37,10 @@ export default class App extends Component {
         }
       })
       .catch(error => console.log(error));
-  }
+  };
 
   getAllVideoFileIdsFromDb = async () => {
-    fetch("http://localhost:4000/ytdl/getAllVideoFileIds")
+    fetch("http://localhost:4000/mongodb/getAllVideoFileIds")
       .then(res => {
         return res.json();
       })
