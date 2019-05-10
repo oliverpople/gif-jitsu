@@ -71,22 +71,36 @@ export default class App extends Component {
         return res.json();
       })
       .then(data => {
-        this.setState({ fileIdsArray: data.fileIdsArray });
+        var reformattedFileIdsArray = this.convertArrayOfObjectsToArray(
+          data.fileIdsArray
+        );
+        this.setState({ fileIdsArray: reformattedFileIdsArray });
+        console.log(this.state.fileIdsArray);
       })
       .catch(err => {
         console.log(err);
       });
   };
 
+  convertArrayOfObjectsToArray = arrayOfObjects => {
+    var twoDimArray = arrayOfObjects.map(function(obj) {
+      return Object.keys(obj)
+        .sort()
+        .map(function(key) {
+          return obj[key];
+        });
+    });
+    var oneDimArray = [].concat(...twoDimArray);
+    return oneDimArray;
+  };
+
   videoList = () => {
-    const videoList = this.state.playerSourceArray.map(playerSource => (
-      <li key={playerSource}>
-        <VideoPlayer
-          playerSource={playerSource}
-          subs={this.state.compiledSubs}
-        />
+    const videoList = this.state.fileIdsArray.map(fileId => (
+      <li key={fileId}>
+        <VideoPlayer fileId={fileId} subs={this.state.compiledSubs} />
       </li>
     ));
+
     return <ul>{videoList}</ul>;
   };
 
@@ -115,7 +129,7 @@ export default class App extends Component {
         <button onClick={this.getAllVideoFileIdsFromDb}>
           Get ids of all video files stored on db
         </button>
-        {this.state.playerSourceArray ? this.videoList() : <div />}
+        {this.state.fileIdsArray ? this.videoList() : <div />}
       </div>
     );
   }

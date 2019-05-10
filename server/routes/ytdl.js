@@ -71,6 +71,34 @@ router.get("/streamMP4", (req, res) => {
   );
 });
 
+router.get("/getUrlStreamForVideoWithId", (req, res) => {
+  var id = req.body.id;
+
+  mongodb.MongoClient.connect(
+    uri,
+    { useNewUrlParser: true },
+    function(error, db) {
+      assert.ifError(error);
+
+      var bucket = new mongodb.GridFSBucket(db, { bucketName: "videos" });
+
+      var downloadStream = bucket.openDownloadStreamById(id);
+      var writeStream = fs.createWriteStream("outputVideo.mp4");
+
+      downloadStream
+        .pipe(writeStream)
+        .on("error", function(error) {
+          assert.ifError(error);
+        })
+        .on("finish", function() {
+          console.log("Downloaded video to Server!");
+          fs.createReadStream("outputVideo.mp4").pipe(res);
+          fs.unlink("outputVideo.mp4", function(err) {});
+        });
+    }
+  );
+});
+
 router.get("/getAllVideoFileIds", (req, res) => {
   var uri = process.env.DB_ROUTE;
 
