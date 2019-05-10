@@ -71,20 +71,20 @@ router.get("/streamMP4", (req, res) => {
   );
 });
 
-router.get("/getAllVideoFileNames", (req, res) => {
+router.get("/getAllVideoFileIds", (req, res) => {
   var uri = process.env.DB_ROUTE;
 
   mongodb.MongoClient.connect(
     uri,
     { useNewUrlParser: true },
-    async function(error, db) {
+    function(error, db) {
       assert.ifError(error);
 
       db.collection("videos.files")
-        .find({}, { filename: 1 })
-        .toArray(function(err, fileNamesArray) {
+        .find({}, { _id: 1 })
+        .toArray(function(err, fileIdsArray) {
           if (err) throw err;
-          res.json({ fileNamesArray });
+          res.json({ fileIdsArray });
           db.close();
         });
     }

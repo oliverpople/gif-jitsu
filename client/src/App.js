@@ -17,7 +17,7 @@ export default class App extends Component {
     );
 
     this.state = {
-      videoFileNamesArray: [],
+      fileIdsArray: [],
       playerSourceArray: [
         "http://media.w3.org/2010/05/sintel/trailer.mp4",
         "http://media.w3.org/2010/05/bunny/trailer.mp4",
@@ -65,21 +65,18 @@ export default class App extends Component {
       });
   }
 
-  getAllVideoFileNames = async () => {
-    // const videoFileNamesArray = [];
-    fetch("http://localhost:4000/ytdl/getAllVideoFileNames");
-    //   .then(re => re.videoFileNames)
-    //   .then(videoFileNames =>
-    //     videoFileNames.map(videoFileName => {
-    //       videoFileNamesArray.push(videoFileName);
-    //     })
-    //   )
-    //   .then(() => {
-    //     this.setState({ videoFileNamesArray });
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
+  getAllVideoFileIdsFromDb = async () => {
+    fetch("http://localhost:4000/ytdl/getAllVideoFileIds")
+      .then(re => console.log(re))
+      // .then(fileIdsArray => {
+      // console.log(typeof fileIdsArray);
+      // JSON.stringify(fileIdsArray);
+      // this.setState({ fileIdsArray });
+      // console.log(this.state.fileIdsArray);
+      // })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   videoList = () => {
@@ -116,8 +113,8 @@ export default class App extends Component {
         ) : (
           <div />
         )}
-        <button onClick={this.getAllVideoFileNames}>
-          Get names of all video files stored on db
+        <button onClick={this.getAllVideoFileIdsFromDb}>
+          Get ids of all video files stored on db
         </button>
         {this.state.playerSourceArray ? this.videoList() : <div />}
       </div>
