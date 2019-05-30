@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import SubtitleCompiler from "./utils/SubtitleCompiler";
 
 export default class VideoPlayer extends Component {
   constructor(props, context) {
@@ -6,7 +7,8 @@ export default class VideoPlayer extends Component {
 
     this.state = {
       playerSource: null,
-      videoMetaDataSubs: {}
+      videoMetaDataSubs: null,
+      compiledSubs: null
     };
   }
 
@@ -45,17 +47,31 @@ export default class VideoPlayer extends Component {
     })
       .then(res => res.json())
       .then(json => {
-        this.setState({ videoMetaDataSubs: json.metadata.inputSubsJson });
+        var videoMetaDataSubs = json.metadata.inputSubsJson;
+        this.setState({ videoMetaDataSubs });
       })
+      .then(this.compileSubs())
       .catch(err => {
         console.log(err);
       });
   };
 
+  compileSubs = async () => {
+    console.log("test 1");
+    if (this.state.videoMetaDataSubs) {
+      console.log("test 2");
+      const compiledSubs = await SubtitleCompiler(this.state.videoMetaDataSubs);
+      console.log(compiledSubs);
+      this.setState({ compiledSubs });
+    } else {
+      this.setState({ compiledSubs: "" });
+    }
+  };
+
   render() {
     return (
       <div>
-        {this.state.playerSource ? (
+        {this.state.playerSource && this.state.compileSubs ? (
           <video
             key={this.props.playerSource}
             id="video"
@@ -71,7 +87,7 @@ export default class VideoPlayer extends Component {
               srcLang="en-US"
               label="English"
               default
-              src={this.props.subs}
+              src={this.state.compileSubs}
             />
           </video>
         ) : (

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import SubtitleCompiler from "./utils/SubtitleCompiler";
+// import SubtitleCompiler from "./utils/SubtitleCompiler";
 import VideoPlayer from "./VideoPlayer";
 import Form from "./Form";
 import axios from "axios";
@@ -10,7 +10,7 @@ export default class App extends Component {
 
     this.state = {
       fileIdsArray: [],
-      compiledSubs: "",
+      // compiledSubs: "",
       inputSubsJson: {},
       YTUrl: ""
     };
@@ -18,8 +18,8 @@ export default class App extends Component {
 
   setSubtitlesWithForm = async inputSubsJson => {
     await this.setState({ inputSubsJson });
-    const compiledSubs = await SubtitleCompiler(this.state.inputSubsJson);
-    this.setState({ compiledSubs });
+    // const compiledSubs = await SubtitleCompiler(this.state.inputSubsJson);
+    // this.setState({ compiledSubs });
   };
 
   setYTUrlWithForm = async YTUrl => {
@@ -71,7 +71,7 @@ export default class App extends Component {
   videoList = () => {
     const videoList = this.state.fileIdsArray.map(fileId => (
       <li key={fileId} style={{ listStyleType: "none" }}>
-        <VideoPlayer fileId={fileId} subs={this.state.compiledSubs} />
+        <VideoPlayer fileId={fileId} />
       </li>
     ));
 
