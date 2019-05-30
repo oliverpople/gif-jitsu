@@ -9,7 +9,9 @@ const router = express.Router();
 
 var uri = process.env.DB_ROUTE;
 
-router.post("/convertURLToMP4", (req, res) => {
+router.post("/convertURLToMP4WithSubsMetaData", (req, res) => {
+  var inputSubsJson = req.body.inputSubsJson;
+
   var videoMp4Stream = ytdl(req.body.YTUrl).pipe(
     fs.createWriteStream("convertedVideo.mp4")
   );
@@ -23,7 +25,9 @@ router.post("/convertURLToMP4", (req, res) => {
 
         var bucket = new mongodb.GridFSBucket(db, { bucketName: "videos" });
         var readStream = fs.createReadStream("convertedVideo.mp4");
-        var uploadStream = bucket.openUploadStream("video.mp4");
+        var uploadStream = bucket.openUploadStream("video.mp4", {
+          metadata: { inputSubsJson }
+        });
 
         readStream
           .pipe(uploadStream)

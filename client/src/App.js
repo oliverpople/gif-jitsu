@@ -28,8 +28,9 @@ export default class App extends Component {
 
   convertURLToMP4OnDb = async () => {
     axios
-      .post("http://localhost:4000/mongodb/convertURLToMP4", {
-        YTUrl: this.state.YTUrl
+      .post("http://localhost:4000/mongodb/convertURLToMP4WithSubsMetaData", {
+        YTUrl: this.state.YTUrl,
+        inputSubsJson: this.state.inputSubsJson
       })
       .then(res => {
         if (res.status === 200) {
@@ -69,7 +70,7 @@ export default class App extends Component {
 
   videoList = () => {
     const videoList = this.state.fileIdsArray.map(fileId => (
-      <li key={fileId}>
+      <li key={fileId} style={{ listStyleType: "none" }}>
         <VideoPlayer fileId={fileId} subs={this.state.compiledSubs} />
       </li>
     ));
