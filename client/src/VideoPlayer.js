@@ -5,12 +5,14 @@ export default class VideoPlayer extends Component {
     super(props, context);
 
     this.state = {
-      playerSource: null
+      playerSource: null,
+      videoMetaDataSubs: {}
     };
   }
 
   componentWillMount() {
     this.getUrlStreamForVideoWithId(this.props.fileId);
+    this.getSubsForVideoWithId(this.props.fileId);
   }
 
   getUrlStreamForVideoWithId = async id => {
@@ -26,6 +28,24 @@ export default class VideoPlayer extends Component {
       .then(blob => URL.createObjectURL(blob))
       .then(url => {
         this.setState({ playerSource: url });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  getSubsForVideoWithId = async id => {
+    fetch("http://localhost:4000/mongodb/getSubsForVideoWithId", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ id })
+    })
+      .then(res => res.json())
+      .then(json => {
+        this.setState({ videoMetaDataSubs: json.metadata.inputSubsJson });
       })
       .catch(err => {
         console.log(err);

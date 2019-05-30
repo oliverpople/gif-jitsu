@@ -93,4 +93,31 @@ router.post("/getUrlStreamForVideoWithId", (req, res) => {
   );
 });
 
+router.post("/getSubsForVideoWithId", (req, res) => {
+  var id = req.body.id;
+
+  mongodb.MongoClient.connect(
+    uri,
+    { useNewUrlParser: true },
+    function(error, db) {
+      assert.ifError(error);
+
+      var bucket = new mongodb.GridFSBucket(db, { bucketName: "videos" });
+
+      var idObject = new ObjectID(id);
+
+      db.collection("videos.files").findOne(
+        { _id: idObject },
+        { metadata: 1, _id: 0 },
+        function(err, result) {
+          if (err) throw err;
+          var metadata = result.metadata;
+          res.json({ metadata });
+          db.close();
+        }
+      );
+    }
+  );
+});
+
 module.exports = router;
