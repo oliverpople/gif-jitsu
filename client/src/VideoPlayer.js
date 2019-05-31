@@ -49,19 +49,16 @@ export default class VideoPlayer extends Component {
       .then(json => {
         var videoMetaDataSubs = json.metadata.inputSubsJson;
         this.setState({ videoMetaDataSubs });
+        this.compileSubs();
       })
-      .then(this.compileSubs())
       .catch(err => {
         console.log(err);
       });
   };
 
   compileSubs = async () => {
-    console.log("test 1");
     if (this.state.videoMetaDataSubs) {
-      console.log("test 2");
       const compiledSubs = await SubtitleCompiler(this.state.videoMetaDataSubs);
-      console.log(compiledSubs);
       this.setState({ compiledSubs });
     } else {
       this.setState({ compiledSubs: "" });
@@ -71,7 +68,7 @@ export default class VideoPlayer extends Component {
   render() {
     return (
       <div>
-        {this.state.playerSource && this.state.compileSubs ? (
+        {this.state.compiledSubs && this.state.playerSource ? (
           <video
             key={this.props.playerSource}
             id="video"
@@ -87,7 +84,7 @@ export default class VideoPlayer extends Component {
               srcLang="en-US"
               label="English"
               default
-              src={this.state.compileSubs}
+              src={this.state.compiledSubs}
             />
           </video>
         ) : (

@@ -10,7 +10,6 @@ export default class App extends Component {
 
     this.state = {
       fileIdsArray: [],
-      // compiledSubs: "",
       inputSubsJson: {},
       YTUrl: ""
     };
@@ -18,15 +17,13 @@ export default class App extends Component {
 
   setSubtitlesWithForm = async inputSubsJson => {
     await this.setState({ inputSubsJson });
-    // const compiledSubs = await SubtitleCompiler(this.state.inputSubsJson);
-    // this.setState({ compiledSubs });
   };
 
   setYTUrlWithForm = async YTUrl => {
     await this.setState({ YTUrl });
   };
 
-  convertURLToMP4OnDb = async () => {
+  convertURLToMP4OnDbWithSubs = async () => {
     axios
       .post("http://localhost:4000/mongodb/convertURLToMP4WithSubsMetaData", {
         YTUrl: this.state.YTUrl,
@@ -85,7 +82,7 @@ export default class App extends Component {
           setYTUrlWithForm={this.setYTUrlWithForm}
           setSubtitlesWithForm={this.setSubtitlesWithForm}
         />
-        <button onClick={this.convertURLToMP4OnDb}>
+        <button onClick={this.convertURLToMP4OnDbWithSubs}>
           Convert YouTube url to MP3 and store on db.
         </button>
         <button onClick={this.getAllVideoFileIdsFromDb}>
