@@ -14,8 +14,8 @@ export default class Form extends Component {
         cues: [
           {
             identifier: "",
-            start: "",
-            end: "",
+            start: 0,
+            end: 1,
             text: "",
             styles: ""
           }

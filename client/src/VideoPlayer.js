@@ -47,8 +47,10 @@ export default class VideoPlayer extends Component {
     })
       .then(res => res.json())
       .then(json => {
-        var videoMetaDataSubs = json.metadata.inputSubsJson;
-        this.setState({ videoMetaDataSubs });
+        if (json.metadata.inputSubsJson) {
+          var videoMetaDataSubs = json.metadata.inputSubsJson;
+          this.setState({ videoMetaDataSubs });
+        }
         this.compileSubs();
       })
       .catch(err => {
