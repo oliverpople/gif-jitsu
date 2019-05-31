@@ -1,74 +1,94 @@
 import React, { Component } from "react";
-import SubtitleCompiler from "./utils/SubtitleCompiler";
+// import SubtitleCompiler from "./utils/SubtitleCompiler";
 import VideoPlayer from "./VideoPlayer";
 import Form from "./Form";
-import DbHandler from "./DbHandler";
 import axios from "axios";
 
 export default class App extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.setSubtitles = this.setSubtitles.bind(this);
-    this.convertURLToMP4Stream = this.convertURLToMP4Stream.bind(this);
-    this.renderVideoWithProps = this.renderVideoWithProps.bind(this);
-
     this.state = {
-      playerSource: "",
-      compiledSubs: "",
+      fileIdsArray: [],
       inputSubsJson: {},
       YTUrl: ""
     };
   }
 
-  async setSubtitles(inputSubsJson) {
+  setSubtitlesWithForm = async inputSubsJson => {
     await this.setState({ inputSubsJson });
-    const compiledSubs = await SubtitleCompiler(this.state.inputSubsJson);
-    this.setState({ compiledSubs });
-  }
+  };
 
-  async convertURLToMP4Stream(YTUrl) {
+  setYTUrlWithForm = async YTUrl => {
     await this.setState({ YTUrl });
-    axios.post("http://localhost:4000/ytdl/convertURLToMP4", {
-      YTUrl: this.state.YTUrl
-    });
-    this.streamMP4();
-  }
+  };
 
-  streamMP4 = async () => {
-    fetch("http://localhost:4000/ytdl/streamMP4", {
-      method: "GET"
-    })
-      .then(re => re.blob())
-      .then(blob => URL.createObjectURL(blob))
-      .then(url => {
-        this.setState({ playerSource: url });
+  convertURLToMP4OnDbWithSubs = async () => {
+    axios
+      .post("http://localhost:4000/mongodb/convertURLToMP4WithSubsMetaData", {
+        YTUrl: this.state.YTUrl,
+        inputSubsJson: this.state.inputSubsJson
+      })
+      .then(res => {
+        if (res.status === 200) {
+          console.log("Video added the database!");
+        }
+      })
+      .catch(error => console.log(error));
+  };
+
+  getAllVideoFileIdsFromDb = async () => {
+    fetch("http://localhost:4000/mongodb/getAllVideoFileIds")
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        var reformattedFileIdsArray = this.convertArrayOfObjectsToArray(
+          data.fileIdsArray
+        );
+        this.setState({ fileIdsArray: reformattedFileIdsArray });
       })
       .catch(err => {
         console.log(err);
       });
   };
 
-  renderVideoWithProps() {
-    if (this.state.compiledSubs && this.state.playerSource !== "") {
-      return (
-        <VideoPlayer
-          playerSource={this.state.playerSource}
-          subs={this.state.compiledSubs}
-        />
-      );
-    }
-  }
+  convertArrayOfObjectsToArray = arrayOfObjects => {
+    var twoDimArray = arrayOfObjects.map(function(obj) {
+      return Object.keys(obj)
+        .sort()
+        .map(function(key) {
+          return obj[key];
+        });
+    });
+    var oneDimArray = [].concat(...twoDimArray);
+    return oneDimArray;
+  };
+
+  videoList = () => {
+    const videoList = this.state.fileIdsArray.map(fileId => (
+      <li key={fileId} style={{ listStyleType: "none" }}>
+        <VideoPlayer fileId={fileId} />
+      </li>
+    ));
+
+    return <ul>{videoList}</ul>;
+  };
 
   render() {
     return (
       <div>
-        {this.renderVideoWithProps()}
         <Form
-          convertURLToMP4Stream={this.convertURLToMP4Stream}
-          setSubtitles={this.setSubtitles}
+          setYTUrlWithForm={this.setYTUrlWithForm}
+          setSubtitlesWithForm={this.setSubtitlesWithForm}
         />
-        {/*<DbHandler /> */}
+        <button onClick={this.convertURLToMP4OnDbWithSubs}>
+          Convert YouTube url to MP3 and store on db.
+        </button>
+        <button onClick={this.getAllVideoFileIdsFromDb}>
+          Get ids of all video files stored on db
+        </button>
+        {this.state.fileIdsArray ? this.videoList() : <div />}
       </div>
     );
   }

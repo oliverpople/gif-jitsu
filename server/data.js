@@ -5,7 +5,19 @@ const Schema = mongoose.Schema;
 const DataSchema = new Schema(
   {
     id: Number,
-    message: String
+    YTUrl: String,
+    inputSubsJson: {
+      valid: Boolean,
+      cues: [
+        {
+          identifier: String,
+          start: String,
+          end: String,
+          text: String,
+          styles: String
+        }
+      ]
+    }
   },
   { timestamps: true }
 );

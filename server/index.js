@@ -8,7 +8,7 @@ const mongoose = require("mongoose");
 const port = 4000;
 const app = express().use("*", cors());
 const router = express.Router();
-var ytdl = require("./routes/ytdl");
+var mongodb = require("./routes/mongodb");
 var CRUD = require("./routes/CRUD");
 
 // this is our MongoDB database
@@ -36,7 +36,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", router);
 
 // app.get("/", (req, res) => res.send("Hello World!"));
-app.use("/ytdl", ytdl);
+app.use("/mongodb", mongodb);
 app.use("/crud", CRUD);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
