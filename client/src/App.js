@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-// import SubtitleCompiler from "./utils/SubtitleCompiler";
 import VideoPlayer from "./VideoPlayer";
+import VideoSnapshotter from "./VideoSnapshotter";
 import Form from "./Form";
 import axios from "axios";
 
@@ -89,6 +89,7 @@ export default class App extends Component {
           Get ids of all video files stored on db
         </button>
         {this.state.fileIdsArray ? this.videoList() : <div />}
+        <VideoSnapshotter />
       </div>
     );
   }
