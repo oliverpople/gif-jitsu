@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import gifshot from "gifshot";
+import GifCreator from "./utils/GifCreator";
 
 export default class VideoSnapper extends Component {
   constructor(props, context) {
@@ -45,19 +45,7 @@ export default class VideoSnapper extends Component {
   };
 
   createGif = () => {
-    gifshot.createGIF(
-      {
-        images: this.state.snapShots
-      },
-      function(obj) {
-        if (!obj.error) {
-          var image = obj.image,
-            animatedImage = document.createElement("img");
-          animatedImage.src = image;
-          document.body.appendChild(animatedImage);
-        }
-      }
-    );
+    GifCreator(this.state.snapShots);
   };
 
   render() {
