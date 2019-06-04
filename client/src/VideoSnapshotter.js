@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import GifCreator from "./utils/GifCreator";
+import slapVideo from "./assets/videos/slapVideo.mp4";
 
 export default class VideoSnapper extends Component {
   constructor(props, context) {
@@ -57,7 +58,7 @@ export default class VideoSnapper extends Component {
           width={320}
           controls={true}
         >
-          <source src="http://techslides.com/demos/sample-videos/small.webm" />
+          <source src={slapVideo} />
         </video>
         <br />
         <button onClick={this.capture} className="button">
