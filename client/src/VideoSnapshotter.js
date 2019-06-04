@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import gifshot from "gifshot";
 
 export default class VideoSnapper extends Component {
   constructor(props, context) {
@@ -8,7 +9,7 @@ export default class VideoSnapper extends Component {
 
     this.state = {
       scaleFactor: 0.25,
-      snapshots: [],
+      snapShots: [],
       videoRef: null,
       outputRef: null
     };
@@ -22,7 +23,7 @@ export default class VideoSnapper extends Component {
   }
 
   capture = () => {
-    let { videoRef, outputRef, scaleFactor, snapshots } = this.state;
+    let { videoRef, outputRef, scaleFactor, snapShots } = this.state;
     if (scaleFactor == null) {
       scaleFactor = 1;
     }
@@ -38,9 +39,25 @@ export default class VideoSnapper extends Component {
     var image = new Image(w, h);
     image.crossOrigin = "anonymous";
     image.src = canvas.toDataURL();
-    snapshots.unshift(image);
+    snapShots.unshift(image);
     output.innerHTML = "";
-    this.state.snapshots.map(snapshot => output.appendChild(snapshot));
+    this.state.snapShots.map(snapShot => output.appendChild(snapShot));
+  };
+
+  createGif = () => {
+    gifshot.createGIF(
+      {
+        images: this.state.snapShots
+      },
+      function(obj) {
+        if (!obj.error) {
+          var image = obj.image,
+            animatedImage = document.createElement("img");
+          animatedImage.src = image;
+          document.body.appendChild(animatedImage);
+        }
+      }
+    );
   };
 
   render() {
@@ -60,6 +77,9 @@ export default class VideoSnapper extends Component {
         </button>
         <br />
         <div ref={this.outputRef} />
+        <button onClick={this.createGif} className="button">
+          Create Gif
+        </button>
       </div>
     );
   }
