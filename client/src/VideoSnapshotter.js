@@ -22,16 +22,14 @@ export default class VideoSnapper extends Component {
   }
 
   capture = () => {
-    let { videoRef, outputRef, scaleFactor } = this.state;
+    let { videoRef, outputRef, scaleFactor, snapshots } = this.state;
     if (scaleFactor == null) {
       scaleFactor = 1;
     }
     var output = outputRef;
     var video = videoRef;
-
     var w = video.videoWidth * scaleFactor;
     var h = video.videoHeight * scaleFactor;
-
     var canvas = document.createElement("canvas");
     canvas.width = w;
     canvas.height = h;
@@ -40,7 +38,9 @@ export default class VideoSnapper extends Component {
     var image = new Image(w, h);
     image.crossOrigin = "anonymous";
     image.src = canvas.toDataURL();
-    output.prepend(image);
+    snapshots.unshift(image);
+    output.innerHTML = "";
+    this.state.snapshots.map(snapshot => output.appendChild(snapshot));
   };
 
   render() {
@@ -55,7 +55,7 @@ export default class VideoSnapper extends Component {
           <source src="http://techslides.com/demos/sample-videos/small.webm" />
         </video>
         <br />
-        <button id="cit" onClick={this.capture} className="button">
+        <button onClick={this.capture} className="button">
           Capture
         </button>
         <br />
