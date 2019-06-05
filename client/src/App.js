@@ -10,13 +10,13 @@ export default class App extends Component {
 
     this.state = {
       fileIdsArray: [],
-      inputSubsJson: {},
+      subs: {},
       YTUrl: ""
     };
   }
 
-  setSubtitlesWithForm = async inputSubsJson => {
-    await this.setState({ inputSubsJson });
+  setSubtitlesWithForm = async subs => {
+    await this.setState({ subs });
   };
 
   setYTUrlWithForm = async YTUrl => {
@@ -27,7 +27,7 @@ export default class App extends Component {
     axios
       .post("http://localhost:4000/mongodb/convertURLToMP4WithSubsMetaData", {
         YTUrl: this.state.YTUrl,
-        inputSubsJson: this.state.inputSubsJson
+        subs: this.state.subs
       })
       .then(res => {
         if (res.status === 200) {
