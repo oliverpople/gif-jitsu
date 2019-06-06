@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import GifCreator from "./utils/GifCreator";
-import slapVideo from "./assets/videos/slapVideo.mp4";
 
 export default class VideoSnapper extends Component {
   constructor(props, context) {
@@ -12,8 +11,13 @@ export default class VideoSnapper extends Component {
       scaleFactor: 0.25,
       snapShots: [],
       videoRef: null,
-      outputRef: null
+      outputRef: null,
+      playerSource: null
     };
+  }
+
+  componentWillMount() {
+    this.getUrlStreamForVideoWithId(this.props.fileId);
   }
 
   componentDidMount() {
@@ -22,6 +26,25 @@ export default class VideoSnapper extends Component {
       outputRef: this.outputRef.current
     });
   }
+
+  getUrlStreamForVideoWithId = async id => {
+    fetch("http://localhost:4000/mongodb/getUrlStreamForVideoWithId", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ id })
+    })
+      .then(re => re.blob())
+      .then(blob => URL.createObjectURL(blob))
+      .then(url => {
+        this.setState({ playerSource: url });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   capture = () => {
     let { videoRef, outputRef, scaleFactor, snapShots } = this.state;
@@ -51,15 +74,22 @@ export default class VideoSnapper extends Component {
 
   render() {
     return (
-      <div className="wrap">
-        <video
-          crossOrigin="anonymous"
-          ref={this.videoRef}
-          width={320}
-          controls={true}
-        >
-          <source src={slapVideo} />
-        </video>
+      <div>
+        {this.state.playerSource ? (
+          <video
+            key={this.props.playerSource}
+            crossOrigin="anonymous"
+            ref={this.videoRef}
+            width={320}
+            controls={true}
+            muted={true}
+            autoPlay={true}
+            loop
+            src={this.state.playerSource}
+          />
+        ) : (
+          <div />
+        )}
         <br />
         <button onClick={this.capture} className="button">
           Capture

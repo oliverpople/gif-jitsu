@@ -9,7 +9,6 @@ const port = 4000;
 const app = express().use("*", cors());
 const router = express.Router();
 var mongodb = require("./routes/mongodb");
-var CRUD = require("./routes/CRUD");
 
 // this is our MongoDB database
 const dbRoute = process.env.DB_ROUTE;
@@ -37,7 +36,6 @@ app.use("/", router);
 
 // app.get("/", (req, res) => res.send("Hello World!"));
 app.use("/mongodb", mongodb);
-app.use("/crud", CRUD);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
