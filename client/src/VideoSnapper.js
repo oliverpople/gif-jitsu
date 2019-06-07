@@ -6,7 +6,7 @@ export default class VideoSnapper extends Component {
     super(props, context);
 
     this.state = {
-      scaleFactor: 0.25,
+      scaleFactor: 1,
       snapShots: [],
       playerSource: null
     };
