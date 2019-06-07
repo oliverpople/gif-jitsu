@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import VideoSnapshotter from "./VideoSnapshotter";
+import VideoSnapper from "./VideoSnapper";
 import Form from "./Form";
 import axios from "axios";
 
@@ -66,7 +66,7 @@ export default class App extends Component {
   videoList = () => {
     const videoList = this.state.fileIdsArray.map(fileId => (
       <li key={fileId} style={{ listStyleType: "none" }}>
-        <VideoSnapshotter fileId={fileId} />
+        <VideoSnapper fileId={fileId} />
       </li>
     ));
 
