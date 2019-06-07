@@ -4,27 +4,16 @@ import GifCreator from "./utils/GifCreator";
 export default class VideoSnapper extends Component {
   constructor(props, context) {
     super(props, context);
-    this.videoRef = React.createRef();
-    this.outputRef = React.createRef();
 
     this.state = {
       scaleFactor: 0.25,
       snapShots: [],
-      videoRef: null,
-      outputRef: null,
       playerSource: null
     };
   }
 
   componentWillMount() {
     this.getUrlStreamForVideoWithId(this.props.fileId);
-  }
-
-  componentDidMount() {
-    this.setState({
-      videoRef: this.videoRef.current,
-      outputRef: this.outputRef.current
-    });
   }
 
   getUrlStreamForVideoWithId = async id => {
@@ -47,12 +36,12 @@ export default class VideoSnapper extends Component {
   };
 
   capture = () => {
-    let { videoRef, outputRef, scaleFactor, snapShots } = this.state;
+    let { scaleFactor, snapShots } = this.state;
     if (scaleFactor == null) {
       scaleFactor = 1;
     }
-    var output = outputRef;
-    var video = videoRef;
+    var output = document.getElementById("output");
+    var video = document.getElementById(this.state.playerSource);
     var w = video.videoWidth * scaleFactor;
     var h = video.videoHeight * scaleFactor;
     var canvas = document.createElement("canvas");
@@ -79,7 +68,7 @@ export default class VideoSnapper extends Component {
           <video
             key={this.props.playerSource}
             crossOrigin="anonymous"
-            ref={this.videoRef}
+            id={this.state.playerSource}
             width={320}
             controls={true}
             muted={true}
@@ -95,7 +84,7 @@ export default class VideoSnapper extends Component {
           Capture
         </button>
         <br />
-        <div ref={this.outputRef} />
+        <div id={"output"} />
         <button onClick={this.createGif} className="button">
           Create Gif
         </button>
