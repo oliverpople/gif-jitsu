@@ -35,7 +35,7 @@ export default class VideoSnapper extends Component {
       });
   };
 
-  capture = () => {
+  captureFrame = () => {
     let { scaleFactor, snapShots } = this.state;
     if (scaleFactor == null) {
       scaleFactor = 1;
@@ -80,8 +80,8 @@ export default class VideoSnapper extends Component {
           <div />
         )}
         <br />
-        <button onClick={this.capture} className="button">
-          Capture
+        <button onClick={this.captureFrame} className="button">
+          Capture Frame
         </button>
         <br />
         <div id={"output"} />

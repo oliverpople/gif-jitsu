@@ -8,6 +8,7 @@ export default function GifCreator(imageArray) {
         var image = obj.image,
           animatedImage = document.createElement("img");
         animatedImage.src = image;
+        animatedImage.id = "gif";
         document.body.appendChild(animatedImage);
       }
     }
