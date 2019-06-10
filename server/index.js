@@ -1,5 +1,6 @@
 const express = require("express");
 require("dotenv").config();
+var bodyParser = require("body-parser");
 var path = require("path");
 var logger = require("morgan");
 var cookieParser = require("cookie-parser");
@@ -26,10 +27,20 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
 app.use(logger("dev"));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+app.use(
+  bodyParser.urlencoded({
+    limit: "5mb",
+    parameterLimit: 100000,
+    extended: true
+  })
+);
+app.use(
+  bodyParser.json({
+    limit: "5mb"
+  })
+);
 
 // append /api for our http requests
 app.use("/", router);

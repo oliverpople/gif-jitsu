@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import GifCreator from "./utils/GifCreator";
+import DataURItoBlob from "./utils/dataURLToBlob";
+import axios from "axios";
 
 export default class VideoSnapper extends Component {
   constructor(props, context) {
@@ -61,6 +63,26 @@ export default class VideoSnapper extends Component {
     GifCreator(this.state.snapShots);
   };
 
+  saveGifToDb = async () => {
+    var gif = await document.getElementById("gif");
+
+    var newGifDataUrl = gif.src;
+    var gifBlob = DataURItoBlob(newGifDataUrl);
+
+    if (gifBlob) {
+      axios
+        .post("http://localhost:4000/mongodb/addNewGifDataURLToDb", {
+          gifBlob
+        })
+        .then(res => {
+          if (res.status === 200) {
+            console.log("Gif added to the database!");
+          }
+        })
+        .catch(error => console.log(error));
+    }
+  };
+
   render() {
     return (
       <div>
@@ -87,6 +109,9 @@ export default class VideoSnapper extends Component {
         <div id={"output"} />
         <button onClick={this.createGif} className="button">
           Create Gif
+        </button>
+        <button onClick={this.saveGifToDb} className="button">
+          Save Gif
         </button>
       </div>
     );
