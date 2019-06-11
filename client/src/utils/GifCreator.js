@@ -10,11 +10,6 @@ export default function GifCreator(imageArray, callback) {
       } else {
         console.log("error from gifshot!");
       }
-      // animatedImage = document.createElement("img");
-      // animatedImage.src = image;
-      // animatedImage.id = "gif";
-      // document.body.appendChild(animatedImage);
-      // }
     }
   );
 }

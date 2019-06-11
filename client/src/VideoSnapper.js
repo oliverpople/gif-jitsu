@@ -69,22 +69,26 @@ export default class VideoSnapper extends Component {
   };
 
   saveGifToDb = async () => {
-    // var gifBlob = DataURItoBlob(this.state.gifImage);
-    // var data = new FormData();
-    //   data.append("data", gifBlob);
-    //
-    //   axios
-    //     .post("http://localhost:4000/mongodb/addNewGifDataURLToDb", data, {
-    //       headers: {
-    //         "Content-Type": "multipart/form-data"
-    //       }
-    //     })
-    //     .then(res => {
-    //       if (res.status === 200) {
-    //         console.log("Gif added to the database!");
-    //       }
-    //     })
-    //     .catch(error => console.log(error));
+    var data = await this.convertImageToBlobAndAppendToFormData();
+    axios
+      .post("http://localhost:4000/mongodb/addNewGifDataURLToDb", data, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      })
+      .then(res => {
+        if (res.status === 200) {
+          console.log("Gif added to the database!");
+        }
+      })
+      .catch(error => console.log(error));
+  };
+
+  convertImageToBlobAndAppendToFormData = async () => {
+    var gifBlob = await DataURItoBlob(this.state.gifImage);
+    var data = new FormData();
+    data.append("data", gifBlob);
+    return data;
   };
 
   render() {

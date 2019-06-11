@@ -6,6 +6,8 @@ var mongodb = require("mongodb");
 const ObjectID = require("mongodb").ObjectID;
 var express = require("express");
 const router = express.Router();
+var multer = require("multer");
+var upload = multer({ dest: "./public" });
 
 var uri = process.env.DB_ROUTE;
 
@@ -116,37 +118,40 @@ router.post("/getSubsForVideoWithId", (req, res) => {
   );
 });
 
-router.post("/addNewGifDataURLToDb", (req, res) => {
-  var { data } = req.body;
-
-  console.log(data);
-
-  // mongodb.MongoClient.connect(
-  //   uri,
-  //   { useNewUrlParser: true },
-  //   function(error, db) {
-  //     assert.ifError(error);
-  //
-  //     var bindata = Buffer.from(newGifDataUrl.split(",")[1], "base64");
-  //
-  //     var bucket = new mongodb.GridFSBucket(db, { bucketName: "gifs" });
-  //
-  //     var readStream = fs.createReadStream({ gifBlob });
-  //     var uploadStream = bucket.openUploadStream("image");
-  //
-  //     readStream
-  //       .pipe(uploadStream)
-  //       .on("error", function(error) {
-  //         assert.ifError(error);
-  //         res.status(500).json({ error: "Internal server error" });
-  //       })
-  //       .on("finish", function() {
-  //         console.log("Video added the database!");
-  //         res.status(200).json({ status: "ok" });
-  //         // fs.unlink("convertedVideo.mp4", function(err) {});
-  //       });
-  //   }
-  // );
+router.post("/addNewGifDataURLToDb", upload.single("data"), function(
+  req,
+  res,
+  next
+) {
+  console.log(req.file);
 });
+
+// mongodb.MongoClient.connect(
+//   uri,
+//   { useNewUrlParser: true },
+//   function(error, db) {
+//     assert.ifError(error);
+//
+//     var bindata = Buffer.from(newGifDataUrl.split(",")[1], "base64");
+//
+//     var bucket = new mongodb.GridFSBucket(db, { bucketName: "gifs" });
+//
+//     var readStream = fs.createReadStream({ gifBlob });
+//     var uploadStream = bucket.openUploadStream("image");
+//
+//     readStream
+//       .pipe(uploadStream)
+//       .on("error", function(error) {
+//         assert.ifError(error);
+//         res.status(500).json({ error: "Internal server error" });
+//       })
+//       .on("finish", function() {
+//         console.log("Video added the database!");
+//         res.status(200).json({ status: "ok" });
+//         // fs.unlink("convertedVideo.mp4", function(err) {});
+//       });
+//   }
+// );
+// });
 
 module.exports = router;
