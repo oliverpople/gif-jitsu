@@ -10,7 +10,9 @@ export default class VideoSnapper extends Component {
     this.state = {
       scaleFactor: 1,
       snapShots: [],
-      playerSource: null
+      playerSource: null,
+      gifImage: null,
+      gifBlob: null
     };
   }
 
@@ -59,28 +61,30 @@ export default class VideoSnapper extends Component {
     this.state.snapShots.map(snapShot => output.appendChild(snapShot));
   };
 
-  createGif = () => {
-    GifCreator(this.state.snapShots);
+  createGif = async () => {
+    let self = this;
+    GifCreator(this.state.snapShots, function(result) {
+      self.setState({ gifImage: result });
+    });
   };
 
   saveGifToDb = async () => {
-    var gif = await document.getElementById("gif");
-
-    var newGifDataUrl = gif.src;
-    var gifBlob = DataURItoBlob(newGifDataUrl);
-
-    if (gifBlob) {
-      axios
-        .post("http://localhost:4000/mongodb/addNewGifDataURLToDb", {
-          gifBlob
-        })
-        .then(res => {
-          if (res.status === 200) {
-            console.log("Gif added to the database!");
-          }
-        })
-        .catch(error => console.log(error));
-    }
+    // var gifBlob = DataURItoBlob(this.state.gifImage);
+    // var data = new FormData();
+    //   data.append("data", gifBlob);
+    //
+    //   axios
+    //     .post("http://localhost:4000/mongodb/addNewGifDataURLToDb", data, {
+    //       headers: {
+    //         "Content-Type": "multipart/form-data"
+    //       }
+    //     })
+    //     .then(res => {
+    //       if (res.status === 200) {
+    //         console.log("Gif added to the database!");
+    //       }
+    //     })
+    //     .catch(error => console.log(error));
   };
 
   render() {
@@ -113,6 +117,11 @@ export default class VideoSnapper extends Component {
         <button onClick={this.saveGifToDb} className="button">
           Save Gif
         </button>
+        {this.state.gifImage ? (
+          <img src={this.state.gifImage} alt="Gif" />
+        ) : (
+          <div />
+        )}
       </div>
     );
   }

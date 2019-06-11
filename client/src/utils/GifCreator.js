@@ -1,16 +1,20 @@
 import gifshot from "gifshot";
 
-export default function GifCreator(imageArray) {
+export default function GifCreator(imageArray, callback) {
   gifshot.createGIF(
     { images: imageArray, frameDuration: 10, gifWidth: 320, sampleInterval: 1 },
     function(obj) {
       if (!obj.error) {
-        var image = obj.image,
-          animatedImage = document.createElement("img");
-        animatedImage.src = image;
-        animatedImage.id = "gif";
-        document.body.appendChild(animatedImage);
+        var image = obj.image;
+        return callback(image);
+      } else {
+        console.log("error from gifshot!");
       }
+      // animatedImage = document.createElement("img");
+      // animatedImage.src = image;
+      // animatedImage.id = "gif";
+      // document.body.appendChild(animatedImage);
+      // }
     }
   );
 }
