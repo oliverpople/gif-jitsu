@@ -103,10 +103,10 @@ export default class App extends Component {
           Convert YouTube url to MP3 and store on db.
         </button>
         <button onClick={this.getAllVideoFileIdsFromDb}>
-          Get ids of all video files stored on db
+          Render all video files stored on db
         </button>
         <button onClick={this.getAllGifFileIdsFromDb}>
-          Get ids of all GIFs files stored on db
+          Render all GIFs files stored on db
         </button>
         {this.state.videoFileIdsArray ? this.videoList() : <div />}
         {this.state.gifFileIdsArray ? this.gifList() : <div />}
