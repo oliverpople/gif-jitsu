@@ -3,6 +3,7 @@ import VideoSnapper from "./VideoSnapper";
 import Gif from "./Gif";
 import Form from "./Form";
 import axios from "axios";
+import ConvertArrayOfObjectsToArray from "./utils/ConvertArrayOfObjectsToArray";
 
 export default class App extends Component {
   constructor(props, context) {
@@ -44,7 +45,7 @@ export default class App extends Component {
         return res.json();
       })
       .then(data => {
-        var reformattedVideoFileIdsArray = this.convertArrayOfObjectsToArray(
+        var reformattedVideoFileIdsArray = ConvertArrayOfObjectsToArray(
           data.videoFileIdsArray
         );
         this.setState({ videoFileIdsArray: reformattedVideoFileIdsArray });
@@ -71,7 +72,7 @@ export default class App extends Component {
         return res.json();
       })
       .then(data => {
-        var reformattedGifFileIdsArray = this.convertArrayOfObjectsToArray(
+        var reformattedGifFileIdsArray = ConvertArrayOfObjectsToArray(
           data.gifFileIdsArray
         );
         this.setState({ gifFileIdsArray: reformattedGifFileIdsArray });
@@ -89,18 +90,6 @@ export default class App extends Component {
     ));
 
     return <ul>{gifList}</ul>;
-  };
-
-  convertArrayOfObjectsToArray = arrayOfObjects => {
-    var twoDimArray = arrayOfObjects.map(function(obj) {
-      return Object.keys(obj)
-        .sort()
-        .map(function(key) {
-          return obj[key];
-        });
-    });
-    var oneDimArray = [].concat(...twoDimArray);
-    return oneDimArray;
   };
 
   render() {
