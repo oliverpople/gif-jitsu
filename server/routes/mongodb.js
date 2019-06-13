@@ -43,7 +43,7 @@ router.post("/convertURLToMP4andStoreOnDb", (req, res) => {
   });
 });
 
-router.get("/getAllVideoFileIds", (req, res) => {
+router.get("/getAllVideoFileIdsFromDb", (req, res) => {
   mongodb.MongoClient.connect(
     uri,
     { useNewUrlParser: true },
@@ -58,6 +58,27 @@ router.get("/getAllVideoFileIds", (req, res) => {
           }
           if (err) throw err;
           res.json({ videoFileIdsArray });
+          db.close();
+        });
+    }
+  );
+});
+
+router.get("/getAllGifFileIdsFromDb", (req, res) => {
+  mongodb.MongoClient.connect(
+    uri,
+    { useNewUrlParser: true },
+    function(error, db) {
+      assert.ifError(error);
+
+      db.collection("gifs.files")
+        .find({}, { _id: 1 })
+        .toArray(function(err, gifFileIdsArray) {
+          {
+            $objectToArray: gifFileIdsArray;
+          }
+          if (err) throw err;
+          res.json({ gifFileIdsArray });
           db.close();
         });
     }

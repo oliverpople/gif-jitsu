@@ -9,6 +9,7 @@ export default class App extends Component {
 
     this.state = {
       videoFileIdsArray: [],
+      gifFileIdsArray: [],
       subs: {},
       YTUrl: ""
     };
@@ -37,7 +38,7 @@ export default class App extends Component {
 
   // Rendering mp4
   getAllVideoFileIdsFromDb = async () => {
-    fetch("http://localhost:4000/mongodb/getAllVideoFileIds")
+    fetch("http://localhost:4000/mongodb/getAllVideoFileIdsFromDb")
       .then(res => {
         return res.json();
       })
@@ -79,6 +80,16 @@ export default class App extends Component {
       });
   };
 
+  // gifList = () => {
+  //   const gifList = this.state.gifFileIdsArray.map(fileId => (
+  //     <li key={fileId} style={{ listStyleType: "none" }}>
+  //       <Gif fileId={fileId} />
+  //     </li>
+  //   ));
+  //
+  //   return <ul>{gifList}</ul>;
+  // };
+
   convertArrayOfObjectsToArray = arrayOfObjects => {
     var twoDimArray = arrayOfObjects.map(function(obj) {
       return Object.keys(obj)
@@ -103,6 +114,9 @@ export default class App extends Component {
         </button>
         <button onClick={this.getAllVideoFileIdsFromDb}>
           Get ids of all video files stored on db
+        </button>
+        <button onClick={this.getAllGifFileIdsFromDb}>
+          Get ids of all GIFs files stored on db
         </button>
         {this.state.videoFileIdsArray ? this.videoList() : <div />}
       </div>
