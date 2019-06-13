@@ -73,7 +73,7 @@ export default class VideoSnapper extends Component {
       this.state.gifImage
     );
     axios
-      .post("http://localhost:4000/mongodb/addNewGifDataURLToDb", data, {
+      .post("http://localhost:4000/mongodb/addNewGifBlobToDb", data, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
@@ -89,7 +89,7 @@ export default class VideoSnapper extends Component {
   convertImageBase64ToBlobAndAppendToFormData = async base64 => {
     var gifBlob = await DataURItoBlob(base64);
     var data = new FormData();
-    data.append("data", gifBlob);
+    data.append("gifBlob", gifBlob);
     return data;
   };
 

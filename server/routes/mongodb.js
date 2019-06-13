@@ -118,40 +118,33 @@ router.post("/getSubsForVideoWithId", (req, res) => {
   );
 });
 
-router.post("/addNewGifDataURLToDb", upload.single("data"), function(
-  req,
-  res,
-  next
-) {
-  console.log(req.file);
-});
+router.post("/addNewGifBlobToDb", upload.single("gifBlob"), function(req, res) {
+  const fileName = req.file.filename;
 
-// mongodb.MongoClient.connect(
-//   uri,
-//   { useNewUrlParser: true },
-//   function(error, db) {
-//     assert.ifError(error);
-//
-//     var bindata = Buffer.from(newGifDataUrl.split(",")[1], "base64");
-//
-//     var bucket = new mongodb.GridFSBucket(db, { bucketName: "gifs" });
-//
-//     var readStream = fs.createReadStream({ gifBlob });
-//     var uploadStream = bucket.openUploadStream("image");
-//
-//     readStream
-//       .pipe(uploadStream)
-//       .on("error", function(error) {
-//         assert.ifError(error);
-//         res.status(500).json({ error: "Internal server error" });
-//       })
-//       .on("finish", function() {
-//         console.log("Video added the database!");
-//         res.status(200).json({ status: "ok" });
-//         // fs.unlink("convertedVideo.mp4", function(err) {});
-//       });
-//   }
-// );
-// });
+  mongodb.MongoClient.connect(
+    uri,
+    { useNewUrlParser: true },
+    function(error, db) {
+      assert.ifError(error);
+
+      var bucket = new mongodb.GridFSBucket(db, { bucketName: "gifs" });
+
+      var readStream = fs.createReadStream("./public/" + fileName);
+      var uploadStream = bucket.openUploadStream("gif.txt");
+
+      readStream
+        .pipe(uploadStream)
+        .on("error", function(error) {
+          assert.ifError(error);
+          res.status(500).json({ error: "Internal server error" });
+        })
+        .on("finish", function() {
+          console.log("Gif added the database!");
+          res.status(200).json({ status: "ok" });
+          fs.unlink("./public/" + fileName, function(err) {});
+        });
+    }
+  );
+});
 
 module.exports = router;
