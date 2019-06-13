@@ -112,6 +112,33 @@ router.post("/getUrlStreamForVideoWithId", (req, res) => {
   );
 });
 
+router.post("/getUrlStreamForGifWithId", (req, res) => {
+  var id = req.body.id;
+
+  mongodb.MongoClient.connect(
+    uri,
+    { useNewUrlParser: true },
+    function(error, db) {
+      assert.ifError(error);
+
+      var bucket = new mongodb.GridFSBucket(db, { bucketName: "gifs" });
+      var downloadStream = bucket.openDownloadStream(new ObjectID(id));
+      var writeStream = fs.createWriteStream(id);
+
+      downloadStream
+        .pipe(writeStream)
+        .on("error", function(error) {
+          assert.ifError(error);
+        })
+        .on("finish", function() {
+          console.log("Downloaded gif to Server!");
+          fs.createReadStream(id).pipe(res);
+          fs.unlink(id, function(err) {});
+        });
+    }
+  );
+});
+
 router.post("/getSubsForVideoWithId", (req, res) => {
   var id = req.body.id;
 

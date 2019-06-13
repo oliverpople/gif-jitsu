@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import VideoSnapper from "./VideoSnapper";
+import Gif from "./Gif";
 import Form from "./Form";
 import axios from "axios";
 
@@ -80,15 +81,15 @@ export default class App extends Component {
       });
   };
 
-  // gifList = () => {
-  //   const gifList = this.state.gifFileIdsArray.map(fileId => (
-  //     <li key={fileId} style={{ listStyleType: "none" }}>
-  //       <Gif fileId={fileId} />
-  //     </li>
-  //   ));
-  //
-  //   return <ul>{gifList}</ul>;
-  // };
+  gifList = () => {
+    const gifList = this.state.gifFileIdsArray.map(fileId => (
+      <li key={fileId} style={{ listStyleType: "none" }}>
+        <Gif fileId={fileId} />
+      </li>
+    ));
+
+    return <ul>{gifList}</ul>;
+  };
 
   convertArrayOfObjectsToArray = arrayOfObjects => {
     var twoDimArray = arrayOfObjects.map(function(obj) {
@@ -119,6 +120,7 @@ export default class App extends Component {
           Get ids of all GIFs files stored on db
         </button>
         {this.state.videoFileIdsArray ? this.videoList() : <div />}
+        {this.state.gifFileIdsArray ? this.gifList() : <div />}
       </div>
     );
   }
