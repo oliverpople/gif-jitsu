@@ -1,14 +1,17 @@
 import React, { Component } from "react";
 import VideoSnapper from "./VideoSnapper";
+import Gif from "./Gif";
 import Form from "./Form";
 import axios from "axios";
+import ConvertArrayOfObjectsToArray from "./utils/ConvertArrayOfObjectsToArray";
 
 export default class App extends Component {
   constructor(props, context) {
     super(props, context);
 
     this.state = {
-      fileIdsArray: [],
+      videoFileIdsArray: [],
+      gifFileIdsArray: [],
       subs: {},
       YTUrl: ""
     };
@@ -35,42 +38,58 @@ export default class App extends Component {
       .catch(error => console.log(error));
   };
 
+  // Rendering mp4
   getAllVideoFileIdsFromDb = async () => {
-    fetch("http://localhost:4000/mongodb/getAllVideoFileIds")
+    fetch("http://localhost:4000/mongodb/getAllVideoFileIdsFromDb")
       .then(res => {
         return res.json();
       })
       .then(data => {
-        var reformattedFileIdsArray = this.convertArrayOfObjectsToArray(
-          data.fileIdsArray
+        var reformattedVideoFileIdsArray = ConvertArrayOfObjectsToArray(
+          data.videoFileIdsArray
         );
-        this.setState({ fileIdsArray: reformattedFileIdsArray });
+        this.setState({ videoFileIdsArray: reformattedVideoFileIdsArray });
       })
       .catch(err => {
         console.log(err);
       });
   };
 
-  convertArrayOfObjectsToArray = arrayOfObjects => {
-    var twoDimArray = arrayOfObjects.map(function(obj) {
-      return Object.keys(obj)
-        .sort()
-        .map(function(key) {
-          return obj[key];
-        });
-    });
-    var oneDimArray = [].concat(...twoDimArray);
-    return oneDimArray;
-  };
-
   videoList = () => {
-    const videoList = this.state.fileIdsArray.map(fileId => (
+    const videoList = this.state.videoFileIdsArray.map(fileId => (
       <li key={fileId} style={{ listStyleType: "none" }}>
         <VideoSnapper fileId={fileId} />
       </li>
     ));
 
     return <ul>{videoList}</ul>;
+  };
+
+  // Rendering gifs
+  getAllGifFileIdsFromDb = async () => {
+    fetch("http://localhost:4000/mongodb/getAllGifFileIdsFromDb")
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        var reformattedGifFileIdsArray = ConvertArrayOfObjectsToArray(
+          data.gifFileIdsArray
+        );
+        this.setState({ gifFileIdsArray: reformattedGifFileIdsArray });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  gifList = () => {
+    const gifList = this.state.gifFileIdsArray.map(fileId => (
+      <li key={fileId} style={{ listStyleType: "none" }}>
+        <Gif fileId={fileId} />
+      </li>
+    ));
+
+    return <ul>{gifList}</ul>;
   };
 
   render() {
@@ -84,9 +103,13 @@ export default class App extends Component {
           Convert YouTube url to MP3 and store on db.
         </button>
         <button onClick={this.getAllVideoFileIdsFromDb}>
-          Get ids of all video files stored on db
+          Render all video files stored on db
         </button>
-        {this.state.fileIdsArray ? this.videoList() : <div />}
+        <button onClick={this.getAllGifFileIdsFromDb}>
+          Render all GIFs files stored on db
+        </button>
+        {this.state.videoFileIdsArray ? this.videoList() : <div />}
+        {this.state.gifFileIdsArray ? this.gifList() : <div />}
       </div>
     );
   }

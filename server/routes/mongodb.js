@@ -43,7 +43,7 @@ router.post("/convertURLToMP4andStoreOnDb", (req, res) => {
   });
 });
 
-router.get("/getAllVideoFileIds", (req, res) => {
+router.get("/getAllVideoFileIdsFromDb", (req, res) => {
   mongodb.MongoClient.connect(
     uri,
     { useNewUrlParser: true },
@@ -52,12 +52,33 @@ router.get("/getAllVideoFileIds", (req, res) => {
 
       db.collection("videos.files")
         .find({}, { _id: 1 })
-        .toArray(function(err, fileIdsArray) {
+        .toArray(function(err, videoFileIdsArray) {
           {
-            $objectToArray: fileIdsArray;
+            $objectToArray: videoFileIdsArray;
           }
           if (err) throw err;
-          res.json({ fileIdsArray });
+          res.json({ videoFileIdsArray });
+          db.close();
+        });
+    }
+  );
+});
+
+router.get("/getAllGifFileIdsFromDb", (req, res) => {
+  mongodb.MongoClient.connect(
+    uri,
+    { useNewUrlParser: true },
+    function(error, db) {
+      assert.ifError(error);
+
+      db.collection("gifs.files")
+        .find({}, { _id: 1 })
+        .toArray(function(err, gifFileIdsArray) {
+          {
+            $objectToArray: gifFileIdsArray;
+          }
+          if (err) throw err;
+          res.json({ gifFileIdsArray });
           db.close();
         });
     }
@@ -86,6 +107,33 @@ router.post("/getUrlStreamForVideoWithId", (req, res) => {
           console.log("Downloaded video to Server!");
           fs.createReadStream(id + ".mp4").pipe(res);
           fs.unlink(id + ".mp4", function(err) {});
+        });
+    }
+  );
+});
+
+router.post("/getUrlStreamForGifWithId", (req, res) => {
+  var id = req.body.id;
+
+  mongodb.MongoClient.connect(
+    uri,
+    { useNewUrlParser: true },
+    function(error, db) {
+      assert.ifError(error);
+
+      var bucket = new mongodb.GridFSBucket(db, { bucketName: "gifs" });
+      var downloadStream = bucket.openDownloadStream(new ObjectID(id));
+      var writeStream = fs.createWriteStream(id);
+
+      downloadStream
+        .pipe(writeStream)
+        .on("error", function(error) {
+          assert.ifError(error);
+        })
+        .on("finish", function() {
+          console.log("Downloaded gif to Server!");
+          fs.createReadStream(id).pipe(res);
+          fs.unlink(id, function(err) {});
         });
     }
   );
