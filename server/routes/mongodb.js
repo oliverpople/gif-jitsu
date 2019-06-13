@@ -6,12 +6,12 @@ var mongodb = require("mongodb");
 const ObjectID = require("mongodb").ObjectID;
 var express = require("express");
 const router = express.Router();
+var multer = require("multer");
+var upload = multer({ dest: "./public" });
 
 var uri = process.env.DB_ROUTE;
 
-router.post("/convertURLToMP4WithSubsMetaData", (req, res) => {
-  var inputSubsJson = req.body.inputSubsJson;
-
+router.post("/convertURLToMP4andStoreOnDb", (req, res) => {
   var videoMp4Stream = ytdl(req.body.YTUrl).pipe(
     fs.createWriteStream("convertedVideo.mp4")
   );
@@ -25,9 +25,7 @@ router.post("/convertURLToMP4WithSubsMetaData", (req, res) => {
 
         var bucket = new mongodb.GridFSBucket(db, { bucketName: "videos" });
         var readStream = fs.createReadStream("convertedVideo.mp4");
-        var uploadStream = bucket.openUploadStream("video.mp4", {
-          metadata: { inputSubsJson }
-        });
+        var uploadStream = bucket.openUploadStream("video.mp4");
 
         readStream
           .pipe(uploadStream)
@@ -116,6 +114,35 @@ router.post("/getSubsForVideoWithId", (req, res) => {
           db.close();
         }
       );
+    }
+  );
+});
+
+router.post("/addNewGifBlobToDb", upload.single("gifBlob"), function(req, res) {
+  const fileName = req.file.filename;
+
+  mongodb.MongoClient.connect(
+    uri,
+    { useNewUrlParser: true },
+    function(error, db) {
+      assert.ifError(error);
+
+      var bucket = new mongodb.GridFSBucket(db, { bucketName: "gifs" });
+
+      var readStream = fs.createReadStream("./public/" + fileName);
+      var uploadStream = bucket.openUploadStream("gif.txt");
+
+      readStream
+        .pipe(uploadStream)
+        .on("error", function(error) {
+          assert.ifError(error);
+          res.status(500).json({ error: "Internal server error" });
+        })
+        .on("finish", function() {
+          console.log("Gif added the database!");
+          res.status(200).json({ status: "ok" });
+          fs.unlink("./public/" + fileName, function(err) {});
+        });
     }
   );
 });

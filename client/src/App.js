@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import VideoPlayer from "./VideoPlayer";
-import VideoSnapshotter from "./VideoSnapshotter";
+import VideoSnapper from "./VideoSnapper";
 import Form from "./Form";
 import axios from "axios";
 
@@ -10,24 +9,23 @@ export default class App extends Component {
 
     this.state = {
       fileIdsArray: [],
-      inputSubsJson: {},
+      subs: {},
       YTUrl: ""
     };
   }
 
-  setSubtitlesWithForm = async inputSubsJson => {
-    await this.setState({ inputSubsJson });
+  setSubtitlesWithForm = async subs => {
+    await this.setState({ subs });
   };
 
   setYTUrlWithForm = async YTUrl => {
     await this.setState({ YTUrl });
   };
 
-  convertURLToMP4OnDbWithSubs = async () => {
+  convertURLToMP4andStoreOnDb = async () => {
     axios
-      .post("http://localhost:4000/mongodb/convertURLToMP4WithSubsMetaData", {
-        YTUrl: this.state.YTUrl,
-        inputSubsJson: this.state.inputSubsJson
+      .post("http://localhost:4000/mongodb/convertURLToMP4andStoreOnDb", {
+        YTUrl: this.state.YTUrl
       })
       .then(res => {
         if (res.status === 200) {
@@ -68,7 +66,7 @@ export default class App extends Component {
   videoList = () => {
     const videoList = this.state.fileIdsArray.map(fileId => (
       <li key={fileId} style={{ listStyleType: "none" }}>
-        <VideoPlayer fileId={fileId} />
+        <VideoSnapper fileId={fileId} />
       </li>
     ));
 
@@ -82,14 +80,13 @@ export default class App extends Component {
           setYTUrlWithForm={this.setYTUrlWithForm}
           setSubtitlesWithForm={this.setSubtitlesWithForm}
         />
-        <button onClick={this.convertURLToMP4OnDbWithSubs}>
+        <button onClick={this.convertURLToMP4andStoreOnDb}>
           Convert YouTube url to MP3 and store on db.
         </button>
         <button onClick={this.getAllVideoFileIdsFromDb}>
           Get ids of all video files stored on db
         </button>
         {this.state.fileIdsArray ? this.videoList() : <div />}
-        <VideoSnapshotter />
       </div>
     );
   }
