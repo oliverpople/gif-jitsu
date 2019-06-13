@@ -69,7 +69,9 @@ export default class VideoSnapper extends Component {
   };
 
   saveGifToDb = async () => {
-    var data = await this.convertImageToBlobAndAppendToFormData();
+    var data = await this.convertImageBase64ToBlobAndAppendToFormData(
+      this.state.gifImage
+    );
     axios
       .post("http://localhost:4000/mongodb/addNewGifDataURLToDb", data, {
         headers: {
@@ -84,8 +86,8 @@ export default class VideoSnapper extends Component {
       .catch(error => console.log(error));
   };
 
-  convertImageToBlobAndAppendToFormData = async () => {
-    var gifBlob = await DataURItoBlob(this.state.gifImage);
+  convertImageBase64ToBlobAndAppendToFormData = async base64 => {
+    var gifBlob = await DataURItoBlob(base64);
     var data = new FormData();
     data.append("data", gifBlob);
     return data;
