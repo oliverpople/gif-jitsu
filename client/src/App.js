@@ -8,7 +8,7 @@ export default class App extends Component {
     super(props, context);
 
     this.state = {
-      fileIdsArray: [],
+      videoFileIdsArray: [],
       subs: {},
       YTUrl: ""
     };
@@ -35,16 +35,44 @@ export default class App extends Component {
       .catch(error => console.log(error));
   };
 
+  // Rendering mp4
   getAllVideoFileIdsFromDb = async () => {
     fetch("http://localhost:4000/mongodb/getAllVideoFileIds")
       .then(res => {
         return res.json();
       })
       .then(data => {
-        var reformattedFileIdsArray = this.convertArrayOfObjectsToArray(
-          data.fileIdsArray
+        var reformattedVideoFileIdsArray = this.convertArrayOfObjectsToArray(
+          data.videoFileIdsArray
         );
-        this.setState({ fileIdsArray: reformattedFileIdsArray });
+        this.setState({ videoFileIdsArray: reformattedVideoFileIdsArray });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  videoList = () => {
+    const videoList = this.state.videoFileIdsArray.map(fileId => (
+      <li key={fileId} style={{ listStyleType: "none" }}>
+        <VideoSnapper fileId={fileId} />
+      </li>
+    ));
+
+    return <ul>{videoList}</ul>;
+  };
+
+  // Rendering gifs
+  getAllGifFileIdsFromDb = async () => {
+    fetch("http://localhost:4000/mongodb/getAllGifFileIdsFromDb")
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        var reformattedGifFileIdsArray = this.convertArrayOfObjectsToArray(
+          data.gifFileIdsArray
+        );
+        this.setState({ gifFileIdsArray: reformattedGifFileIdsArray });
       })
       .catch(err => {
         console.log(err);
@@ -63,16 +91,6 @@ export default class App extends Component {
     return oneDimArray;
   };
 
-  videoList = () => {
-    const videoList = this.state.fileIdsArray.map(fileId => (
-      <li key={fileId} style={{ listStyleType: "none" }}>
-        <VideoSnapper fileId={fileId} />
-      </li>
-    ));
-
-    return <ul>{videoList}</ul>;
-  };
-
   render() {
     return (
       <div>
@@ -86,7 +104,7 @@ export default class App extends Component {
         <button onClick={this.getAllVideoFileIdsFromDb}>
           Get ids of all video files stored on db
         </button>
-        {this.state.fileIdsArray ? this.videoList() : <div />}
+        {this.state.videoFileIdsArray ? this.videoList() : <div />}
       </div>
     );
   }

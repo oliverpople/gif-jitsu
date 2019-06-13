@@ -52,12 +52,12 @@ router.get("/getAllVideoFileIds", (req, res) => {
 
       db.collection("videos.files")
         .find({}, { _id: 1 })
-        .toArray(function(err, fileIdsArray) {
+        .toArray(function(err, videoFileIdsArray) {
           {
-            $objectToArray: fileIdsArray;
+            $objectToArray: videoFileIdsArray;
           }
           if (err) throw err;
-          res.json({ fileIdsArray });
+          res.json({ videoFileIdsArray });
           db.close();
         });
     }
