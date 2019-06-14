@@ -17,27 +17,11 @@ export default class VideoSnapper extends Component {
   }
 
   componentWillMount() {
-    this.getUrlStreamForVideoWithId(this.props.fileId);
+    console.log(this.props.playerSource);
+    /// make videosanpepr match state with props
+    this.setState({ playerSource: this.props.playerSource });
+    console.log(this.state.playerSource);
   }
-
-  getUrlStreamForVideoWithId = async id => {
-    fetch("http://localhost:4000/mongodb/getUrlStreamForVideoWithId", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ id })
-    })
-      .then(re => re.blob())
-      .then(blob => URL.createObjectURL(blob))
-      .then(url => {
-        this.setState({ playerSource: url });
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
 
   captureFrame = () => {
     let { scaleFactor, snapShots } = this.state;
@@ -96,17 +80,17 @@ export default class VideoSnapper extends Component {
   render() {
     return (
       <div>
-        {this.state.playerSource ? (
+        {this.props.playerSource ? (
           <video
             key={this.props.playerSource}
             crossOrigin="anonymous"
-            id={this.state.playerSource}
+            id={this.props.playerSource}
             width={320}
             controls={true}
             muted={true}
             autoPlay={true}
             loop
-            src={this.state.playerSource}
+            src={this.props.playerSource}
           />
         ) : (
           <div />

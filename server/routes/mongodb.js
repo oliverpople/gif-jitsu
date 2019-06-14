@@ -43,6 +43,27 @@ router.post("/convertURLToMP4andStoreOnDb", (req, res) => {
   });
 });
 
+router.post("/convertURLToMP4", (req, res) => {
+  var videoMp4Stream = ytdl(req.body.YTUrl).pipe(
+    fs.createWriteStream("convertedVideo.mp4")
+  );
+
+  videoMp4Stream.on("finish", function() {
+    var readStream = fs.createReadStream("convertedVideo.mp4");
+    readStream
+      .pipe(res)
+      .on("error", function(error) {
+        assert.ifError(error);
+        res.status(500).json({ error: "Internal server error" });
+      })
+      .on("finish", function() {
+        console.log("Video converted to MP4");
+        res.status(200).json({ status: "ok" });
+        fs.unlink("convertedVideo.mp4", function(err) {});
+      });
+  });
+});
+
 router.get("/getAllVideoFileIdsFromDb", (req, res) => {
   mongodb.MongoClient.connect(
     uri,

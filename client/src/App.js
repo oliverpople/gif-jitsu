@@ -10,7 +10,7 @@ export default class App extends Component {
     super(props, context);
 
     this.state = {
-      videoFileIdsArray: [],
+      videoStream: null,
       gifFileIdsArray: [],
       subs: {},
       YTUrl: ""
@@ -25,15 +25,14 @@ export default class App extends Component {
     await this.setState({ YTUrl });
   };
 
-  convertURLToMP4andStoreOnDb = async () => {
+  convertURLToMP4 = async () => {
     axios
-      .post("http://localhost:4000/mongodb/convertURLToMP4andStoreOnDb", {
+      .post("http://localhost:4000/mongodb/convertURLToMP4", {
         YTUrl: this.state.YTUrl
       })
       .then(res => {
-        if (res.status === 200) {
-          console.log("Video added the database!");
-        }
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        this.setState({ videoStream: url });
       })
       .catch(error => console.log(error));
   };
@@ -53,16 +52,6 @@ export default class App extends Component {
       .catch(err => {
         console.log(err);
       });
-  };
-
-  videoList = () => {
-    const videoList = this.state.videoFileIdsArray.map(fileId => (
-      <li key={fileId} style={{ listStyleType: "none" }}>
-        <VideoSnapper fileId={fileId} />
-      </li>
-    ));
-
-    return <ul>{videoList}</ul>;
   };
 
   // Rendering gifs
@@ -99,8 +88,8 @@ export default class App extends Component {
           setYTUrlWithForm={this.setYTUrlWithForm}
           setSubtitlesWithForm={this.setSubtitlesWithForm}
         />
-        <button onClick={this.convertURLToMP4andStoreOnDb}>
-          Convert YouTube url to MP3 and store on db.
+        <button onClick={this.convertURLToMP4}>
+          Convert YouTube url to MP3
         </button>
         <button onClick={this.getAllVideoFileIdsFromDb}>
           Render all video files stored on db
@@ -108,7 +97,11 @@ export default class App extends Component {
         <button onClick={this.getAllGifFileIdsFromDb}>
           Render all GIFs files stored on db
         </button>
-        {this.state.videoFileIdsArray ? this.videoList() : <div />}
+        {this.state.videoStream ? (
+          <VideoSnapper playerSource={this.state.videoStream} />
+        ) : (
+          <div />
+        )}
         {this.state.gifFileIdsArray ? this.gifList() : <div />}
       </div>
     );
