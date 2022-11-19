@@ -10,7 +10,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-html5video": "^2.5.1",
-    "react-scripts": "2.1.8",
+    "react-scripts": "5.0.1",
     "video-react": "^0.13.6",
     "ytdl-core": "^0.29.2"
   },
